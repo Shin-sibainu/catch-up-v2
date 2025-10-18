@@ -12,9 +12,9 @@ export function ArticleCard({ article }: ArticleCardProps) {
       href={article.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block h-full"
+      className="group block h-full animate-fade-in"
     >
-      <article className="h-full rounded-lg border border-gray-800 bg-gradient-to-br from-gray-900/50 to-gray-800/30 p-6 backdrop-blur-sm transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/20">
+      <article className="glass-card h-full rounded-lg p-6 transition-all duration-300 hover-lift hover:border-primary/50">
         {/* Header - Media Source & Time */}
         <div className="mb-3 flex items-center justify-between text-sm">
           <div className="flex items-center gap-2">

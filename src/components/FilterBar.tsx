@@ -77,7 +77,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
         <label className="mb-2 block text-sm font-medium text-gray-400">並び替え</label>
         <select
           value={sort}
-          onChange={(e) => setSort(e.target.value as any)}
+          onChange={(e) => setSort(e.target.value as 'trend' | 'likes' | 'bookmarks' | 'latest')}
           className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 text-sm text-white focus:border-primary focus:outline-none"
         >
           <option value="trend">トレンド</option>

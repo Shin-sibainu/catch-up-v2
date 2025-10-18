@@ -1,5 +1,4 @@
 import { sqliteTable, text, integer, primaryKey, index } from 'drizzle-orm/sqlite-core';
-import { sql } from 'drizzle-orm';
 
 // メディアソーステーブル
 export const mediaSources = sqliteTable('media_sources', {

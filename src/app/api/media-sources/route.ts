@@ -13,13 +13,9 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const activeOnly = searchParams.get('active') === 'true';
 
-    let query = db.select().from(mediaSources);
-
-    if (activeOnly) {
-      query = query.where(eq(mediaSources.isActive, true));
-    }
-
-    const sources = await query;
+    const sources = activeOnly
+      ? await db.select().from(mediaSources).where(eq(mediaSources.isActive, true))
+      : await db.select().from(mediaSources);
 
     return NextResponse.json(sources);
   } catch (error) {

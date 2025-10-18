@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, articles, tags, articleTags, mediaSources } from '@/db';
-import { eq, and, or, like, inArray, sql, desc, asc } from 'drizzle-orm';
+import { eq, and, or, like, inArray, sql, desc } from 'drizzle-orm';
 import type { GetArticlesResponse, ArticleWithTags } from '@/types';
 
 export const runtime = 'nodejs';
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
     // 期間フィルター
     if (period !== 'all') {
       const now = new Date();
-      let startDate = new Date();
+      const startDate = new Date();
 
       switch (period) {
         case 'day':

@@ -11,10 +11,11 @@ export const runtime = 'nodejs';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const articleId = parseInt(params.id, 10);
+    const { id } = await params;
+    const articleId = parseInt(id, 10);
 
     if (isNaN(articleId)) {
       return NextResponse.json(

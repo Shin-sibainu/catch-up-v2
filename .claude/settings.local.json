@@ -12,13 +12,27 @@
       "Bash(gh repo create:*)",
       "Bash(npm run build:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(vercel login)",
+      "Bash(node -e \"console.log(require(''crypto'').randomBytes(32).toString(''hex''))\")",
+      "Bash(vercel env add TURSO_DATABASE_URL production)",
+      "Bash(vercel)",
+      "Bash(vercel --yes)",
+      "Bash(vercel env add TURSO_AUTH_TOKEN production)",
+      "Bash(vercel env add QIITA_ACCESS_TOKEN production)",
+      "Bash(vercel env add CRON_SECRET production)",
+      "Bash(vercel env add NEXT_PUBLIC_APP_URL production)",
+      "Bash(vercel env ls)",
+      "Bash(vercel --prod --yes)",
+      "Bash(vercel env rm TURSO_DATABASE_URL production --yes)",
+      "Bash(vercel env rm TURSO_AUTH_TOKEN production --yes)",
+      "Bash(vercel env rm QIITA_ACCESS_TOKEN production --yes)"
     ],
     "deny": [],
     "ask": []
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "chrome-devtools"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

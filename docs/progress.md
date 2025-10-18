@@ -5,20 +5,22 @@
 
 ---
 
-## Phase 1: MVP開発
+## Phase 1: MVP 開発
 
-### Week 1-2: プロジェクトセットアップ、DB設計、データ収集バッチ
+### Week 1-2: プロジェクトセットアップ、DB 設計、データ収集バッチ
 
 #### プロジェクト初期設定
-- [x] Next.js 15プロジェクトのセットアップ
-- [x] TypeScript設定
-- [x] ESLint/Prettier設定
-- [x] Tailwind CSS設定
+
+- [x] Next.js 15 プロジェクトのセットアップ
+- [x] TypeScript 設定
+- [x] ESLint/Prettier 設定
+- [x] Tailwind CSS 設定
 - [x] フォルダ構成の整理
 
 #### データベース設計・実装
-- [x] Tursoデータベースのセットアップ
-- [x] Drizzle ORMの設定
+
+- [x] Turso データベースのセットアップ
+- [x] Drizzle ORM の設定
 - [x] スキーマ定義
   - [x] media_sources テーブル
   - [x] articles テーブル
@@ -29,12 +31,13 @@
 - [x] シードデータ投入（media_sources）
 
 #### データ収集バッチ処理
-- [x] Qiita API連携
-  - [x] APIクライアント実装
+
+- [x] Qiita API 連携
+  - [x] API クライアント実装
   - [x] データパース処理
   - [x] エラーハンドリング
-- [x] Zenn API/RSS連携
-  - [x] APIクライアント実装
+- [x] Zenn API/RSS 連携
+  - [x] API クライアント実装
   - [x] データパース処理
   - [x] エラーハンドリング
 - [x] バッチ処理本体
@@ -43,13 +46,14 @@
   - [x] 記事の挿入/更新処理
   - [x] タグの抽出・関連付け
   - [x] ログ記録処理
-- [ ] Vercel Cron Jobsの設定
+- [ ] Vercel Cron Jobs の設定
 
 ---
 
 ### Week 3-4: 記事一覧表示、フィルター、検索機能
 
-#### API実装
+#### API 実装
+
 - [x] GET /api/articles - 記事一覧取得
   - [x] クエリパラメータ処理（page, limit, media, period, tags, sort, search）
   - [x] ページネーション実装
@@ -61,6 +65,7 @@
 - [x] GET /api/media-sources - メディアソース一覧取得
 
 #### フロントエンド - コンポーネント実装
+
 - [x] レイアウト
   - [x] ルートレイアウト（`app/layout.tsx`）
   - [x] ヘッダーコンポーネント
@@ -84,32 +89,35 @@
   - [x] 統計情報表示
 
 #### 共通コンポーネント
-- [ ] Buttonコンポーネント（Primary, Secondary, Ghost）
-- [ ] Badgeコンポーネント（タグ表示用）
-- [x] Loadingコンポーネント（スケルトン、スピナー）
-- [ ] Toastコンポーネント（通知用）
+
+- [ ] Button コンポーネント（Primary, Secondary, Ghost）
+- [ ] Badge コンポーネント（タグ表示用）
+- [x] Loading コンポーネント（スケルトン、スピナー）
+- [ ] Toast コンポーネント（通知用）
 
 ---
 
-### Week 5-6: UI/UX調整、テスト、デプロイ
+### Week 5-6: UI/UX 調整、テスト、デプロイ
 
 #### デザイン調整
+
 - [x] ダークモードカラーパレット適用
 - [x] グラスモーフィズム効果の適用
 - [x] アニメーション・トランジション調整
 - [x] レスポンシブ対応確認
   - [x] モバイル（320px-767px）
   - [x] タブレット（768px-1023px）
-  - [x] デスクトップ（1024px以上）
+  - [x] デスクトップ（1024px 以上）
 
 #### テスト
+
 - [ ] 単体テスト
   - [ ] トレンドスコア計算関数
   - [ ] データ変換ユーティリティ
 - [ ] 統合テスト
-  - [ ] APIエンドポイント
+  - [ ] API エンドポイント
   - [ ] データ収集バッチ
-- [ ] E2Eテスト
+- [ ] E2E テスト
   - [ ] 記事一覧表示
   - [ ] フィルタリング
   - [ ] 検索機能
@@ -118,16 +126,18 @@
   - [ ] API レスポンス時間計測
 
 #### デプロイ準備
+
 - [x] 環境変数の設定（Vercel）
 - [x] ビルドエラーの解消
-- [x] SEO設定（metadata）
-- [ ] OGP画像設定
-- [ ] favicon設定
+- [x] SEO 設定（metadata）
+- [ ] OGP 画像設定
+- [ ] favicon 設定
 
 #### デプロイ
-- [ ] Vercelへの初回デプロイ
-- [x] Vercel Cron Jobs設定（vercel.json）
-- [ ] Cron Job動作確認
+
+- [ ] Vercel への初回デプロイ
+- [x] Vercel Cron Jobs 設定（vercel.json）
+- [ ] Cron Job 動作確認
 - [ ] 本番環境での動作確認
 - [ ] パフォーマンスモニタリング設定
 
@@ -143,9 +153,9 @@
 
 ---
 
-## Phase 3: AI機能（今後）
+## Phase 3: AI 機能（今後）
 
-- [ ] Claude API / OpenAI API連携
+- [ ] Claude API / OpenAI API 連携
 - [ ] ホットトピック分析バッチ
 - [ ] パーソナライズドフィード
 
@@ -154,12 +164,15 @@
 ## メモ・課題
 
 ### 技術的な課題
+
 -
 
 ### 改善案
+
 -
 
 ### 参考リンク
+
 - [Qiita API Docs](https://qiita.com/api/v2/docs)
 - [Zenn Feed](https://zenn.dev/feed)
 - [Next.js 15 Docs](https://nextjs.org/docs)

@@ -7,6 +7,29 @@ interface ArticleCardProps {
 }
 
 export function ArticleCard({ article }: ArticleCardProps) {
+  // メディアごとの色設定
+  const getMediaColor = (mediaName: string) => {
+    switch (mediaName) {
+      case 'qiita':
+        return {
+          badge: 'bg-[#55C500]/20 text-[#55C500]',
+          border: 'border-l-[#55C500]',
+        };
+      case 'zenn':
+        return {
+          badge: 'bg-[#3EA8FF]/20 text-[#3EA8FF]',
+          border: 'border-l-[#3EA8FF]',
+        };
+      default:
+        return {
+          badge: 'bg-primary/20 text-primary',
+          border: 'border-l-primary',
+        };
+    }
+  };
+
+  const colors = getMediaColor(article.mediaSource.name);
+
   return (
     <Link
       href={article.url}
@@ -14,11 +37,11 @@ export function ArticleCard({ article }: ArticleCardProps) {
       rel="noopener noreferrer"
       className="group block h-full animate-fade-in"
     >
-      <article className="glass-card h-full rounded-lg p-6 transition-all duration-300 hover-lift hover:border-primary/50">
+      <article className={`glass-card h-full rounded-lg p-6 border-l-4 ${colors.border} transition-all duration-300 hover-lift hover:border-primary/50`}>
         {/* Header - Media Source & Time */}
         <div className="mb-3 flex items-center justify-between text-sm">
           <div className="flex items-center gap-2">
-            <span className="rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary">
+            <span className={`rounded-full px-3 py-1 text-xs font-medium ${colors.badge}`}>
               {article.mediaSource.displayName}
             </span>
           </div>

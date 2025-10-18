@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* ダークモード優先のカラーパレット */
-  --color-background-primary: #0a0a0a;
-  --color-background-secondary: #1a1a1a;
-  --color-background-tertiary: #2a2a2a;
-  --color-border: #333333;
+  /* ライトモード（デフォルト） */
+  --color-background-primary: #FFFFFF;
+  --color-background-secondary: #F9FAFB;
+  --color-background-tertiary: #F3F4F6;
+  --color-border: #E5E7EB;
 
   --color-primary: #3B82F6;
   --color-primary-light: #60A5FA;
@@ -16,9 +16,9 @@
   --color-warning: #F59E0B;
   --color-error: #EF4444;
 
-  --color-text-primary: #FAFAFA;
-  --color-text-secondary: #A1A1A1;
-  --color-text-tertiary: #737373;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
 
   /* フォント */
   --font-sans: "Inter", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
@@ -26,6 +26,18 @@
 
   /* カスタムスペーシング */
   --spacing-glass: 12px;
+}
+
+/* ダークモード */
+.dark {
+  --color-background-primary: #0a0a0a;
+  --color-background-secondary: #1a1a1a;
+  --color-background-tertiary: #2a2a2a;
+  --color-border: #333333;
+
+  --color-text-primary: #FAFAFA;
+  --color-text-secondary: #A1A1A1;
+  --color-text-tertiary: #737373;
 }
 
 :root {
@@ -66,16 +78,26 @@ html {
 
 /* グラスモーフィズム効果 */
 .glass {
-  background: rgba(26, 26, 26, 0.7);
+  background: rgba(249, 250, 251, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dark .glass {
+  background: rgba(26, 26, 26, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .glass-card {
-  background: rgba(26, 26, 26, 0.5);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dark .glass-card {
+  background: rgba(26, 26, 26, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 

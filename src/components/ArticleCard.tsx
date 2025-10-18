@@ -22,7 +22,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
               {article.mediaSource.displayName}
             </span>
           </div>
-          <time className="text-gray-400" dateTime={article.publishedAt.toString()}>
+          <time className="text-text-tertiary" dateTime={article.publishedAt.toString()}>
             {formatRelativeTime(new Date(article.publishedAt))}
           </time>
         </div>
@@ -34,7 +34,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
         {/* Description */}
         {article.description && (
-          <p className="mb-4 line-clamp-3 text-sm text-gray-400">
+          <p className="mb-4 line-clamp-3 text-sm text-text-secondary">
             {article.description}
           </p>
         )}
@@ -45,7 +45,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
             {article.tags.slice(0, 5).map((tag) => (
               <span
                 key={tag.id}
-                className="rounded-md bg-gray-800 px-2 py-1 text-xs text-gray-300"
+                className="rounded-md bg-background-tertiary px-2 py-1 text-xs text-text-secondary"
               >
                 #{tag.displayName}
               </span>
@@ -54,7 +54,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
         )}
 
         {/* Footer - Author & Stats */}
-        <div className="flex items-center justify-between border-t border-gray-800 pt-4">
+        <div className="flex items-center justify-between border-t border-border pt-4">
           {/* Author */}
           <div className="flex items-center gap-2">
             {article.authorAvatarUrl && (
@@ -64,11 +64,11 @@ export function ArticleCard({ article }: ArticleCardProps) {
                 className="h-6 w-6 rounded-full"
               />
             )}
-            <span className="text-sm text-gray-400">{article.authorName}</span>
+            <span className="text-sm text-text-secondary">{article.authorName}</span>
           </div>
 
           {/* Stats */}
-          <div className="flex items-center gap-4 text-sm text-gray-400">
+          <div className="flex items-center gap-4 text-sm text-text-tertiary">
             {article.likesCount > 0 && (
               <div className="flex items-center gap-1">
                 <span>❤️</span>

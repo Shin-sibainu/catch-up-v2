@@ -11,7 +11,8 @@
       "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Implement Week 1-4 MVP features\n\nWeek 1-2: Database & Data Collection\n- Setup Turso database with Drizzle ORM\n- Define schema (media_sources, articles, tags, article_tags, crawl_logs)\n- Implement Qiita API client with authentication\n- Implement Zenn API client\n- Create article collection batch endpoint with error handling\n- Add trend score calculation algorithm\n- Seed initial media sources data\n\nWeek 3-4: Frontend & API\n- Implement REST API endpoints (articles, tags, media-sources)\n- Add pagination, filtering, sorting, and search functionality\n- Create responsive article card component\n- Build filter bar with media/period/tag/search filters\n- Add sidebar with popular tags cloud and stats\n- Implement header with navigation\n- Setup layout with sticky header and sidebars\n- Add loading and error states\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(gh repo create:*)",
       "Bash(npm run build:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

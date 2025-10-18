@@ -20,8 +20,8 @@ export function Sidebar() {
   if (loading) {
     return (
       <aside className="space-y-6">
-        <div className="rounded-lg border border-gray-800 bg-background-secondary p-6">
-          <div className="h-6 w-32 animate-pulse rounded bg-gray-700"></div>
+        <div className="rounded-lg border border-border bg-background-secondary p-6">
+          <div className="h-6 w-32 animate-pulse rounded bg-background-tertiary"></div>
         </div>
       </aside>
     );
@@ -30,7 +30,7 @@ export function Sidebar() {
   return (
     <aside className="space-y-6">
       {/* Popular Tags Cloud */}
-      <div className="rounded-lg border border-gray-800 bg-background-secondary p-6">
+      <div className="rounded-lg border border-border bg-background-secondary p-6">
         <h2 className="mb-4 text-lg font-bold text-text-primary">人気タグ</h2>
         <div className="flex flex-wrap gap-2">
           {popularTags.map((tag) => {
@@ -41,13 +41,13 @@ export function Sidebar() {
               <a
                 key={tag.id}
                 href={`/?tags=${tag.slug}`}
-                className="rounded-md bg-gray-800 px-3 py-1 transition-colors hover:bg-primary hover:text-white"
+                className="rounded-md bg-background-tertiary px-3 py-1 transition-colors hover:bg-primary hover:text-white"
                 style={{ fontSize: `${fontSize}rem` }}
               >
-                <span className="font-medium text-gray-300">
+                <span className="font-medium text-text-secondary">
                   {tag.displayName}
                 </span>
-                <span className="ml-1 text-xs text-gray-500">
+                <span className="ml-1 text-xs text-text-tertiary">
                   ({tag.articleCount})
                 </span>
               </a>
@@ -57,15 +57,15 @@ export function Sidebar() {
       </div>
 
       {/* Stats */}
-      <div className="rounded-lg border border-gray-800 bg-background-secondary p-6">
+      <div className="rounded-lg border border-border bg-background-secondary p-6">
         <h2 className="mb-4 text-lg font-bold text-text-primary">統計情報</h2>
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-400">総タグ数</span>
+            <span className="text-sm text-text-tertiary">総タグ数</span>
             <span className="text-lg font-bold text-primary">{popularTags.length}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-400">総記事数</span>
+            <span className="text-sm text-text-tertiary">総記事数</span>
             <span className="text-lg font-bold text-primary">
               {popularTags.reduce((sum, tag) => sum + tag.articleCount, 0)}
             </span>
@@ -74,9 +74,9 @@ export function Sidebar() {
       </div>
 
       {/* About */}
-      <div className="rounded-lg border border-gray-800 bg-background-secondary p-6">
+      <div className="rounded-lg border border-border bg-background-secondary p-6">
         <h2 className="mb-4 text-lg font-bold text-text-primary">About</h2>
-        <p className="text-sm leading-relaxed text-gray-400">
+        <p className="text-sm leading-relaxed text-text-tertiary">
           Catch Upは、QiitaやZennなどの技術メディアから最新のトレンド記事を自動収集し、一つの場所でキャッチアップできるサービスです。
         </p>
       </div>

@@ -74,7 +74,7 @@ export default function Home() {
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto"></div>
-          <p className="text-gray-400">読み込み中...</p>
+          <p className="text-text-tertiary">読み込み中...</p>
         </div>
       </div>
     );
@@ -84,7 +84,7 @@ export default function Home() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <p className="mb-4 text-red-400">エラー: {error}</p>
+          <p className="mb-4 text-error">エラー: {error}</p>
           <button
             onClick={fetchArticles}
             className="rounded-lg bg-primary px-6 py-2 font-medium text-white hover:bg-primary/80"
@@ -99,12 +99,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background-primary">
       {/* Hero Section */}
-      <div className="border-b border-gray-800 bg-gradient-to-b from-background-secondary to-background-primary">
+      <div className="border-b border-border bg-gradient-to-b from-background-secondary to-background-primary">
         <div className="container mx-auto px-4 py-16">
           <h1 className="mb-4 text-center text-5xl font-bold text-text-primary">
             技術トレンド
           </h1>
-          <p className="text-center text-xl text-gray-400">
+          <p className="text-center text-xl text-text-tertiary">
             最新の技術記事をキャッチアップ
           </p>
         </div>
@@ -125,7 +125,7 @@ export default function Home() {
             {/* Mobile Filters */}
             <div className="mb-6 lg:hidden">
               <details className="group">
-                <summary className="cursor-pointer rounded-lg border border-gray-800 bg-background-secondary px-4 py-3 font-medium text-gray-300">
+                <summary className="cursor-pointer rounded-lg border border-border bg-background-secondary px-4 py-3 font-medium text-text-secondary">
                   フィルター
                   <span className="ml-2 inline-block transition-transform group-open:rotate-180">
                     ▼
@@ -139,7 +139,7 @@ export default function Home() {
 
             {/* Stats */}
             <div className="mb-6 text-center lg:text-left">
-              <p className="text-gray-400">
+              <p className="text-text-tertiary">
                 {loading ? (
                   '読み込み中...'
                 ) : articles.length > 0 ? (
@@ -158,8 +158,8 @@ export default function Home() {
                 ))}
               </div>
             ) : (
-              <div className="rounded-lg border border-gray-800 bg-background-secondary p-12 text-center">
-                <p className="text-gray-400">
+              <div className="rounded-lg border border-border bg-background-secondary p-12 text-center">
+                <p className="text-text-tertiary">
                   条件に一致する記事が見つかりませんでした
                 </p>
                 <button
@@ -173,7 +173,7 @@ export default function Home() {
                     });
                     setPage(1);
                   }}
-                  className="mt-4 rounded-lg bg-gray-800 px-6 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
+                  className="mt-4 rounded-lg bg-background-tertiary px-6 py-2 text-sm font-medium text-text-secondary hover:bg-background-tertiary/80"
                 >
                   フィルターをリセット
                 </button>
@@ -186,17 +186,17 @@ export default function Home() {
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1 || loading}
-                  className="rounded-lg bg-gray-800 px-6 py-2 font-medium text-white transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-lg bg-background-tertiary px-6 py-2 font-medium text-text-primary transition-colors hover:bg-background-tertiary/80 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   前へ
                 </button>
-                <span className="text-gray-400">
+                <span className="text-text-tertiary">
                   {page} / {totalPages}
                 </span>
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages || loading}
-                  className="rounded-lg bg-gray-800 px-6 py-2 font-medium text-white transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-lg bg-background-tertiary px-6 py-2 font-medium text-text-primary transition-colors hover:bg-background-tertiary/80 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   次へ
                 </button>

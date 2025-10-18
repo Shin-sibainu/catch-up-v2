@@ -59,26 +59,26 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
   };
 
   return (
-    <div className="space-y-4 rounded-lg border border-gray-800 bg-background-secondary p-4">
+    <div className="space-y-4 rounded-lg border border-border bg-background-secondary p-4">
       {/* Search */}
       <div>
-        <label className="mb-2 block text-sm font-medium text-gray-400">検索</label>
+        <label className="mb-2 block text-sm font-medium text-text-tertiary">検索</label>
         <input
           type="text"
           placeholder="記事を検索..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 text-sm text-white placeholder-gray-500 focus:border-primary focus:outline-none"
+          className="w-full rounded-lg border border-border bg-background-tertiary px-4 py-2 text-sm text-text-primary placeholder-text-tertiary focus:border-primary focus:outline-none"
         />
       </div>
 
       {/* Sort */}
       <div>
-        <label className="mb-2 block text-sm font-medium text-gray-400">並び替え</label>
+        <label className="mb-2 block text-sm font-medium text-text-tertiary">並び替え</label>
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as 'trend' | 'likes' | 'bookmarks' | 'latest')}
-          className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 text-sm text-white focus:border-primary focus:outline-none"
+          className="w-full rounded-lg border border-border bg-background-tertiary px-4 py-2 text-sm text-text-primary focus:border-primary focus:outline-none"
         >
           <option value="trend">トレンド</option>
           <option value="likes">いいね数</option>
@@ -89,7 +89,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
 
       {/* Period */}
       <div>
-        <label className="mb-2 block text-sm font-medium text-gray-400">期間</label>
+        <label className="mb-2 block text-sm font-medium text-text-tertiary">期間</label>
         <div className="grid grid-cols-2 gap-2">
           {(['all', 'day', 'week', 'month'] as const).map((period) => (
             <button
@@ -98,7 +98,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
               className={`rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
                 selectedPeriod === period
                   ? 'border-primary bg-primary/20 text-primary'
-                  : 'border-gray-700 bg-gray-900 text-gray-400 hover:border-gray-600'
+                  : 'border-border bg-background-tertiary text-text-tertiary hover:border-primary/50'
               }`}
             >
               {period === 'all' && '全期間'}
@@ -112,20 +112,20 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
 
       {/* Media Sources */}
       <div>
-        <label className="mb-2 block text-sm font-medium text-gray-400">メディア</label>
+        <label className="mb-2 block text-sm font-medium text-text-tertiary">メディア</label>
         <div className="space-y-2">
           {mediaSources.map((media) => (
             <label
               key={media.id}
-              className="flex cursor-pointer items-center gap-2 rounded-lg p-2 hover:bg-gray-800/50"
+              className="flex cursor-pointer items-center gap-2 rounded-lg p-2 hover:bg-background-tertiary"
             >
               <input
                 type="checkbox"
                 checked={selectedMedia.includes(media.name)}
                 onChange={() => toggleMedia(media.name)}
-                className="h-4 w-4 rounded border-gray-700 bg-gray-900 text-primary focus:ring-2 focus:ring-primary"
+                className="h-4 w-4 rounded border-border bg-background-tertiary text-primary focus:ring-2 focus:ring-primary"
               />
-              <span className="text-sm text-gray-300">{media.displayName}</span>
+              <span className="text-sm text-text-secondary">{media.displayName}</span>
             </label>
           ))}
         </div>
@@ -133,7 +133,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
 
       {/* Popular Tags */}
       <div>
-        <label className="mb-2 block text-sm font-medium text-gray-400">人気タグ</label>
+        <label className="mb-2 block text-sm font-medium text-text-tertiary">人気タグ</label>
         <div className="flex flex-wrap gap-2">
           {tags.slice(0, 10).map((tag) => (
             <button
@@ -142,7 +142,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
               className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
                 selectedTags.includes(tag.slug)
                   ? 'bg-primary text-white'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  : 'bg-background-tertiary text-text-secondary hover:bg-background-tertiary/80'
               }`}
             >
               {tag.displayName}
@@ -165,7 +165,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
             setSelectedPeriod('all');
             setSort('trend');
           }}
-          className="w-full rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
+          className="w-full rounded-lg bg-background-tertiary px-4 py-2 text-sm font-medium text-text-secondary hover:bg-background-tertiary/80"
         >
           フィルターをリセット
         </button>

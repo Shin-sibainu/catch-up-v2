@@ -1,103 +1,217 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect, useState, useCallback } from 'react';
+import { ArticleCard } from '@/components/ArticleCard';
+import { FilterBar } from '@/components/FilterBar';
+import { Sidebar } from '@/components/Sidebar';
+import type { GetArticlesResponse, ArticleWithTags } from '@/types';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [articles, setArticles] = useState<ArticleWithTags[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [filters, setFilters] = useState({
+    media: [] as string[],
+    period: 'all' as 'day' | 'week' | 'month' | 'all',
+    tags: [] as string[],
+    search: '',
+    sort: 'trend' as 'trend' | 'likes' | 'bookmarks' | 'latest',
+  });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const fetchArticles = useCallback(async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '12',
+        sort: filters.sort,
+      });
+
+      if (filters.media.length > 0) {
+        params.set('media', filters.media.join(','));
+      }
+      if (filters.period !== 'all') {
+        params.set('period', filters.period);
+      }
+      if (filters.tags.length > 0) {
+        params.set('tags', filters.tags.join(','));
+      }
+      if (filters.search) {
+        params.set('search', filters.search);
+      }
+
+      const response = await fetch(`/api/articles?${params.toString()}`);
+
+      if (!response.ok) {
+        throw new Error('記事の取得に失敗しました');
+      }
+
+      const data: GetArticlesResponse = await response.json();
+      setArticles(data.articles);
+      setTotalPages(data.pagination.totalPages);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '不明なエラーが発生しました');
+    } finally {
+      setLoading(false);
+    }
+  }, [page, filters]);
+
+  useEffect(() => {
+    fetchArticles();
+  }, [fetchArticles]);
+
+  // フィルター変更時はページを1にリセット
+  const handleFilterChange = useCallback((newFilters: typeof filters) => {
+    setFilters(newFilters);
+    setPage(1);
+  }, []);
+
+  if (loading && articles.length === 0) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto"></div>
+          <p className="text-gray-400">読み込み中...</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+    );
+  }
+
+  if (error && articles.length === 0) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="mb-4 text-red-400">エラー: {error}</p>
+          <button
+            onClick={fetchArticles}
+            className="rounded-lg bg-primary px-6 py-2 font-medium text-white hover:bg-primary/80"
+          >
+            再試行
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background-primary">
+      {/* Hero Section */}
+      <div className="border-b border-gray-800 bg-gradient-to-b from-background-secondary to-background-primary">
+        <div className="container mx-auto px-4 py-16">
+          <h1 className="mb-4 text-center text-5xl font-bold text-text-primary">
+            技術トレンド
+          </h1>
+          <p className="text-center text-xl text-gray-400">
+            最新の技術記事をキャッチアップ
+          </p>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid gap-8 lg:grid-cols-[280px_1fr_320px]">
+          {/* Left Sidebar - Filters (Desktop) */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-24">
+              <FilterBar onFilterChange={handleFilterChange} />
+            </div>
+          </aside>
+
+          {/* Main Articles */}
+          <main>
+            {/* Mobile Filters */}
+            <div className="mb-6 lg:hidden">
+              <details className="group">
+                <summary className="cursor-pointer rounded-lg border border-gray-800 bg-background-secondary px-4 py-3 font-medium text-gray-300">
+                  フィルター
+                  <span className="ml-2 inline-block transition-transform group-open:rotate-180">
+                    ▼
+                  </span>
+                </summary>
+                <div className="mt-2">
+                  <FilterBar onFilterChange={handleFilterChange} />
+                </div>
+              </details>
+            </div>
+
+            {/* Stats */}
+            <div className="mb-6 text-center lg:text-left">
+              <p className="text-gray-400">
+                {loading ? (
+                  '読み込み中...'
+                ) : articles.length > 0 ? (
+                  `${articles.length}件の記事を表示中`
+                ) : (
+                  '記事が見つかりませんでした'
+                )}
+              </p>
+            </div>
+
+            {/* Articles Grid */}
+            {articles.length > 0 ? (
+              <div className="grid gap-6 sm:grid-cols-2">
+                {articles.map((article) => (
+                  <ArticleCard key={article.id} article={article} />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-lg border border-gray-800 bg-background-secondary p-12 text-center">
+                <p className="text-gray-400">
+                  条件に一致する記事が見つかりませんでした
+                </p>
+                <button
+                  onClick={() => {
+                    setFilters({
+                      media: [],
+                      period: 'all',
+                      tags: [],
+                      search: '',
+                      sort: 'trend',
+                    });
+                    setPage(1);
+                  }}
+                  className="mt-4 rounded-lg bg-gray-800 px-6 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700"
+                >
+                  フィルターをリセット
+                </button>
+              </div>
+            )}
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-12 flex items-center justify-center gap-4">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1 || loading}
+                  className="rounded-lg bg-gray-800 px-6 py-2 font-medium text-white transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  前へ
+                </button>
+                <span className="text-gray-400">
+                  {page} / {totalPages}
+                </span>
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages || loading}
+                  className="rounded-lg bg-gray-800 px-6 py-2 font-medium text-white transition-colors hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  次へ
+                </button>
+              </div>
+            )}
+          </main>
+
+          {/* Right Sidebar (Desktop) */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-24">
+              <Sidebar />
+            </div>
+          </aside>
+        </div>
+      </div>
     </div>
   );
 }

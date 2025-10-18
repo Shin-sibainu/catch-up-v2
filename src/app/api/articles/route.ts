@@ -4,6 +4,8 @@ import { eq, and, or, like, inArray, sql, desc } from 'drizzle-orm';
 import type { GetArticlesResponse, ArticleWithTags } from '@/types';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // 1時間ごとに再検証
 
 /**
  * 記事一覧取得API

@@ -7,28 +7,37 @@ interface ArticleCardProps {
 }
 
 export function ArticleCard({ article }: ArticleCardProps) {
-  // メディアごとの色設定
-  const getMediaColor = (mediaName: string) => {
+  // メディアごとの色設定と絵文字
+  const getMediaConfig = (mediaName: string) => {
     switch (mediaName) {
       case 'qiita':
         return {
           badge: 'bg-[#55C500]/20 text-[#55C500]',
           border: 'border-l-[#55C500]',
+          emoji: '📗',
         };
       case 'zenn':
         return {
           badge: 'bg-[#3EA8FF]/20 text-[#3EA8FF]',
           border: 'border-l-[#3EA8FF]',
+          emoji: '⚡',
+        };
+      case 'note':
+        return {
+          badge: 'bg-[#41C9B4]/20 text-[#41C9B4]',
+          border: 'border-l-[#41C9B4]',
+          emoji: '📝',
         };
       default:
         return {
           badge: 'bg-primary/20 text-primary',
           border: 'border-l-primary',
+          emoji: '📄',
         };
     }
   };
 
-  const colors = getMediaColor(article.mediaSource.name);
+  const mediaConfig = getMediaConfig(article.mediaSource.name);
 
   return (
     <Link
@@ -37,12 +46,12 @@ export function ArticleCard({ article }: ArticleCardProps) {
       rel="noopener noreferrer"
       className="group block h-full animate-fade-in"
     >
-      <article className={`glass-card h-full rounded-lg p-6 border-l-4 ${colors.border} transition-all duration-300 hover-lift hover:border-primary/50`}>
+      <article className={`glass-card h-full rounded-lg p-6 border-l-4 ${mediaConfig.border} transition-all duration-300 hover-lift hover:border-primary/50`}>
         {/* Header - Media Source & Time */}
         <div className="mb-3 flex items-center justify-between text-sm">
           <div className="flex items-center gap-2">
-            <span className={`rounded-full px-3 py-1 text-xs font-medium ${colors.badge}`}>
-              {article.mediaSource.displayName}
+            <span className={`rounded-full px-3 py-1 text-xs font-medium ${mediaConfig.badge}`}>
+              {mediaConfig.emoji} {article.mediaSource.displayName}
             </span>
           </div>
           <time className="text-text-tertiary" dateTime={article.publishedAt.toString()}>
@@ -77,7 +86,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
         )}
 
         {/* Footer - Author & Stats */}
-        <div className="flex items-center justify-between border-t border-border pt-4">
+        <div className="flex items-center justify-between border-t border-border/30 pt-4">
           {/* Author */}
           <div className="flex items-center gap-2">
             {article.authorAvatarUrl && (

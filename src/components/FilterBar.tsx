@@ -59,7 +59,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
   };
 
   return (
-    <div className="space-y-4 rounded-lg border border-border bg-background-secondary p-4">
+    <div className="space-y-4 rounded-lg glass-card p-4">
       {/* Search */}
       <div>
         <label className="mb-2 block text-sm font-medium text-text-tertiary">検索</label>
@@ -68,7 +68,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
           placeholder="記事を検索..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-lg border border-border bg-background-tertiary px-4 py-2 text-sm text-text-primary placeholder-text-tertiary focus:border-primary focus:outline-none"
+          className="w-full rounded-lg border border-border/30 bg-background-tertiary px-4 py-2 text-sm text-text-primary placeholder-text-tertiary focus:border-primary focus:outline-none"
         />
       </div>
 
@@ -78,7 +78,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as 'trend' | 'likes' | 'bookmarks' | 'latest')}
-          className="w-full rounded-lg border border-border bg-background-tertiary px-4 py-2 text-sm text-text-primary focus:border-primary focus:outline-none"
+          className="w-full rounded-lg border border-border/30 bg-background-tertiary px-4 py-2 text-sm text-text-primary focus:border-primary focus:outline-none"
         >
           <option value="trend">トレンド</option>
           <option value="likes">いいね数</option>
@@ -98,7 +98,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
               className={`rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
                 selectedPeriod === period
                   ? 'border-primary bg-primary/20 text-primary'
-                  : 'border-border bg-background-tertiary text-text-tertiary hover:border-primary/50'
+                  : 'border-border/30 bg-background-tertiary text-text-tertiary hover:border-primary/50'
               }`}
             >
               {period === 'all' && '全期間'}

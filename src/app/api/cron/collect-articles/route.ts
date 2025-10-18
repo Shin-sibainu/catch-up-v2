@@ -3,6 +3,7 @@ import { db, mediaSources, articles, tags, articleTags, crawlLogs } from '@/db';
 import { eq } from 'drizzle-orm';
 import { QiitaClient } from '@/lib/api/qiita';
 import { ZennClient } from '@/lib/api/zenn';
+import { NoteClient } from '@/lib/api/note';
 import { generateTagSlug } from '@/lib/utils';
 
 export const runtime = 'nodejs';
@@ -82,6 +83,8 @@ async function collectFromSource(source: typeof mediaSources.$inferSelect) {
       articlesCollected = await collectFromQiita(source.id);
     } else if (source.name === 'zenn') {
       articlesCollected = await collectFromZenn(source.id);
+    } else if (source.name === 'note') {
+      articlesCollected = await collectFromNote(source.id);
     }
 
     console.log(`✓ Collected ${articlesCollected} articles from ${source.displayName}`);
@@ -190,6 +193,68 @@ async function collectFromZenn(mediaSourceId: number): Promise<number> {
         .limit(1);
 
       // Zennはタグ情報がAPIに含まれないため、空配列
+      const tagNames = client.extractTags(article);
+      await saveTags(savedArticle.id, tagNames);
+
+      count++;
+    } catch (error) {
+      console.error(`Error saving article ${article.id}:`, error);
+    }
+  }
+
+  return count;
+}
+
+/**
+ * note.comから記事を収集
+ */
+async function collectFromNote(mediaSourceId: number): Promise<number> {
+  const client = new NoteClient();
+
+  // 技術系キーワードで記事を取得
+  const noteArticles = await client.fetchArticles({
+    keywords: [
+      'プログラミング',
+      'エンジニア',
+      'Web開発',
+      'React',
+      'Next.js',
+      'TypeScript',
+      'フロントエンド',
+      'バックエンド',
+      'AI',
+      'ChatGPT',
+    ],
+    size: 50,
+  });
+
+  let count = 0;
+
+  for (const article of noteArticles) {
+    try {
+      // 記事を挿入/更新
+      const articleData = client.mapToArticle(article, mediaSourceId);
+      await db
+        .insert(articles)
+        .values(articleData)
+        .onConflictDoUpdate({
+          target: articles.url,
+          set: {
+            likesCount: articleData.likesCount,
+            commentsCount: articleData.commentsCount,
+            trendScore: articleData.trendScore,
+            updatedAt: new Date(),
+          },
+        });
+
+      // 記事IDを取得
+      const [savedArticle] = await db
+        .select()
+        .from(articles)
+        .where(eq(articles.url, articleData.url))
+        .limit(1);
+
+      // タグを保存
       const tagNames = client.extractTags(article);
       await saveTags(savedArticle.id, tagNames);
 

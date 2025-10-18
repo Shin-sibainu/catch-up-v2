@@ -27,7 +27,7 @@ export function HomeContent() {
         {/* Mobile Filters */}
         <div className="mb-6 lg:hidden">
           <details className="group">
-            <summary className="cursor-pointer rounded-lg border border-border bg-background-secondary px-4 py-3 font-medium text-text-secondary">
+            <summary className="cursor-pointer rounded-lg glass-card px-4 py-3 font-medium text-text-secondary">
               フィルター
               <span className="ml-2 inline-block transition-transform group-open:rotate-180">
                 ▼

@@ -3,6 +3,8 @@ import { db, tags, articleTags } from '@/db';
 import { eq, sql, desc } from 'drizzle-orm';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // 1時間ごとに再検証
 
 /**
  * タグ一覧取得API

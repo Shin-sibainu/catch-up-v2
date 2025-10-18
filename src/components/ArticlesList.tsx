@@ -87,24 +87,11 @@ export function ArticlesList({ filters }: ArticlesListProps) {
 
   return (
     <>
-      {/* Stats */}
-      <div className="mb-6 text-center lg:text-left">
-        <p className="text-text-tertiary">
-          {loading ? (
-            '読み込み中...'
-          ) : articles.length > 0 ? (
-            `${articles.length}件の記事を表示中`
-          ) : (
-            '記事が見つかりませんでした'
-          )}
-        </p>
-      </div>
-
       {/* Articles Grid */}
       {loading ? (
         <div className="grid gap-6 sm:grid-cols-2">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="glass-card rounded-lg p-6 border-l-4 border-l-background-tertiary">
+            <div key={i} className="glass-card rounded-lg p-6 border-l-4 border-l-background-tertiary/30">
               <div className="mb-3 flex items-center justify-between">
                 <div className="h-6 w-20 bg-background-tertiary rounded-full animate-pulse"></div>
                 <div className="h-4 w-16 bg-background-tertiary rounded animate-pulse"></div>
@@ -116,7 +103,7 @@ export function ArticlesList({ filters }: ArticlesListProps) {
                 <div className="h-6 w-16 bg-background-tertiary rounded animate-pulse"></div>
                 <div className="h-6 w-20 bg-background-tertiary rounded animate-pulse"></div>
               </div>
-              <div className="flex items-center justify-between border-t border-border pt-4">
+              <div className="flex items-center justify-between border-t border-border/30 pt-4">
                 <div className="flex items-center gap-2">
                   <div className="h-6 w-6 bg-background-tertiary rounded-full animate-pulse"></div>
                   <div className="h-4 w-24 bg-background-tertiary rounded animate-pulse"></div>
@@ -135,7 +122,7 @@ export function ArticlesList({ filters }: ArticlesListProps) {
           ))}
         </div>
       ) : (
-        <div className="rounded-lg border border-border bg-background-secondary p-12 text-center">
+        <div className="rounded-lg glass-card p-12 text-center">
           <p className="text-text-tertiary">
             条件に一致する記事が見つかりませんでした
           </p>

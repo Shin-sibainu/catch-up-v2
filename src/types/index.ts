@@ -65,5 +65,28 @@ export type ZennArticle = {
   };
 };
 
+// note.com API型（非公式）
+export type NoteArticle = {
+  id: string | number;
+  key?: string;
+  name: string;
+  description?: string | null;
+  eyecatch?: string;
+  noteUrl?: string;
+  price?: number; // 有料記事の価格（0は無料）
+  like_count?: number; // API uses like_count
+  comment_count?: number; // API uses comment_count
+  publish_at?: string; // API uses publish_at
+  created_at?: string;
+  hashtags?: Array<string | { name: string }>;
+  user?: {
+    id: string | number;
+    urlname: string;
+    nickname?: string;
+    name?: string;
+    user_profile_image_path?: string; // API uses user_profile_image_path
+  };
+};
+
 // クロールログのステータス型
 export type CrawlStatus = 'success' | 'failed' | 'partial';

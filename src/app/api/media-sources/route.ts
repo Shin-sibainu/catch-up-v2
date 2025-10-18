@@ -3,6 +3,8 @@ import { db, mediaSources } from '@/db';
 import { eq } from 'drizzle-orm';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // 1時間ごとに再検証
 
 /**
  * メディアソース一覧取得API

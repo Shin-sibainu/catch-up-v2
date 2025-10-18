@@ -22,6 +22,14 @@ async function seed() {
         iconUrl: '/icons/zenn.svg',
         isActive: true,
       },
+      {
+        name: 'note',
+        displayName: 'note',
+        baseUrl: 'https://note.com',
+        apiEndpoint: 'https://note.com/api/v3/searches',
+        iconUrl: '/icons/note.svg',
+        isActive: true,
+      },
     ];
 
     // メディアソースを挿入

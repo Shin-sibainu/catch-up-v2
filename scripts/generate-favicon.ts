@@ -5,13 +5,13 @@ import path from 'path';
 async function generateFavicons() {
   const publicDir = path.join(process.cwd(), 'public');
 
-  // Create a simple canvas with the fire emoji
-  const svg = `
-    <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-      <rect width="512" height="512" fill="#FFF8F0" rx="80"/>
-      <text x="256" y="380" font-size="320" text-anchor="middle" font-family="Arial">🔥</text>
-    </svg>
-  `;
+  // Read the existing favicon.svg
+  const svgPath = path.join(publicDir, 'favicon.svg');
+  const svgContent = fs.readFileSync(svgPath, 'utf-8');
+
+  // Create higher resolution version for better quality
+  const svg = svgContent
+    .replace('viewBox="0 0 100 100"', 'width="512" height="512" viewBox="0 0 100 100"');
 
   const buffer = Buffer.from(svg);
 

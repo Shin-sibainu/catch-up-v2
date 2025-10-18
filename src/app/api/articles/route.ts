@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, articles, tags, articleTags, mediaSources } from '@/db';
-import { eq, and, or, like, inArray, sql, desc } from 'drizzle-orm';
+import { eq, and, or, like, inArray, sql, desc, gte } from 'drizzle-orm';
 import type { GetArticlesResponse, ArticleWithTags } from '@/types';
 
 export const runtime = 'nodejs';
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
           break;
       }
 
-      conditions.push(sql`${articles.publishedAt} >= ${startDate.toISOString()}`);
+      conditions.push(gte(articles.publishedAt, startDate));
     }
 
     // 検索フィルター

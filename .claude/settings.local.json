@@ -46,7 +46,9 @@
       "Bash(dotenv -e .env.local -- npx tsx:*)",
       "Bash(npm run db:reset-note:*)",
       "Bash(paste:*)",
-      "mcp__chrome-devtools__resize_page"
+      "mcp__chrome-devtools__resize_page",
+      "mcp__chrome-devtools__new_page",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []

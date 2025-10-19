@@ -130,6 +130,28 @@ export const crawlLogs = sqliteTable(
   })
 );
 
+// ユーザーテーブル (Phase 2)
+export const users = sqliteTable(
+  'users',
+  {
+    id: text('id').primaryKey(), // Better Auth ID
+    email: text('email').notNull().unique(),
+    name: text('name'),
+    avatarUrl: text('avatar_url'),
+    isPremium: integer('is_premium', { mode: 'boolean' }).notNull().default(false),
+    createdAt: integer('created_at', { mode: 'timestamp' })
+      .notNull()
+      .$defaultFn(() => new Date()),
+    updatedAt: integer('updated_at', { mode: 'timestamp' })
+      .notNull()
+      .$defaultFn(() => new Date())
+      .$onUpdateFn(() => new Date()),
+  },
+  (table) => ({
+    emailIdx: index('idx_users_email').on(table.email),
+  })
+);
+
 // 型エクスポート
 export type MediaSource = typeof mediaSources.$inferSelect;
 export type InsertMediaSource = typeof mediaSources.$inferInsert;
@@ -145,3 +167,6 @@ export type InsertArticleTag = typeof articleTags.$inferInsert;
 
 export type CrawlLog = typeof crawlLogs.$inferSelect;
 export type InsertCrawlLog = typeof crawlLogs.$inferInsert;
+
+export type User = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;

@@ -226,8 +226,6 @@ export const favorites = sqliteTable(
       .$defaultFn(() => new Date()),
   },
   (table) => ({
-    // 同じユーザーが同じ記事を複数回お気に入りできないようにする
-    uniqueUserArticle: primaryKey({ columns: [table.userId, table.articleId] }),
     userIdx: index('idx_favorites_user').on(table.userId),
     articleIdx: index('idx_favorites_article').on(table.articleId),
   })

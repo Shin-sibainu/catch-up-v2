@@ -70,7 +70,18 @@
       "Bash(git stash pop)",
       "Bash(git checkout develop)",
       "Bash(npm run dev)",
-      "Bash(npx drizzle-kit studio)"
+      "Bash(npx drizzle-kit studio)",
+      "mcp__chrome-devtools__list_console_messages",
+      "Bash(netstat -ano)",
+      "Bash(findstr :3000)",
+      "Bash(taskkill /F /PID 25456)",
+      "Bash(taskkill /F /PID 9592)",
+      "Bash(taskkill //F //PID 25456)",
+      "mcp__chrome-devtools__click",
+      "mcp__chrome-devtools__fill_form",
+      "mcp__chrome-devtools__wait_for",
+      "mcp__chrome-devtools__list_network_requests",
+      "mcp__chrome-devtools__get_network_request"
     ],
     "deny": [],
     "ask": []

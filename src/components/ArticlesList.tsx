@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { ArticleCard } from '@/components/ArticleCard';
+import { useSession } from '@/lib/auth-client';
 import type { GetArticlesResponse, ArticleWithTags } from '@/types';
 
 interface ArticlesListProps {
@@ -17,11 +18,13 @@ interface ArticlesListProps {
 }
 
 export function ArticlesList({ filters, initialArticles, initialTotalPages }: ArticlesListProps) {
+  const { data: session } = useSession();
   const [articles, setArticles] = useState<ArticleWithTags[]>(initialArticles);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(initialTotalPages);
+  const [favoriteStates, setFavoriteStates] = useState<Record<number, boolean>>({});
 
   const fetchArticles = useCallback(async () => {
     try {
@@ -87,6 +90,26 @@ export function ArticlesList({ filters, initialArticles, initialTotalPages }: Ar
     setPage(1);
   }, [filters.media, filters.period, filters.tags, filters.search, filters.sort]);
 
+  // お気に入り状態をチェック
+  useEffect(() => {
+    if (!session || articles.length === 0) return;
+
+    const checkFavorites = async () => {
+      const articleIds = articles.map((a) => a.id).join(',');
+      try {
+        const response = await fetch(`/api/favorites/check?ids=${articleIds}`);
+        if (response.ok) {
+          const favorites = await response.json();
+          setFavoriteStates(favorites);
+        }
+      } catch (error) {
+        console.error('Failed to check favorites:', error);
+      }
+    };
+
+    checkFavorites();
+  }, [session, articles]);
+
   if (error && articles.length === 0) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
@@ -136,7 +159,11 @@ export function ArticlesList({ filters, initialArticles, initialTotalPages }: Ar
       ) : articles.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2">
           {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
+            <ArticleCard
+              key={article.id}
+              article={article}
+              initialIsFavorited={favoriteStates[article.id] || false}
+            />
           ))}
         </div>
       ) : (

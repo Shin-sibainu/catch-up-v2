@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from '@/lib/auth-client';
 
 interface FavoriteButtonProps {
@@ -17,6 +17,11 @@ export function FavoriteButton({
   const { data: session } = useSession();
   const [isFavorited, setIsFavorited] = useState(initialIsFavorited);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Sync internal state when initialIsFavorited prop changes
+  useEffect(() => {
+    setIsFavorited(initialIsFavorited);
+  }, [initialIsFavorited]);
 
   const handleToggleFavorite = async (e: React.MouseEvent) => {
     e.preventDefault();

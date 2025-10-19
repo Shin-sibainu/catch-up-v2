@@ -62,10 +62,15 @@ export function ArticleCard({ article, initialIsFavorited = false }: ArticleCard
             <span className={`rounded-full px-3 py-1 text-xs font-medium ${mediaConfig.badge}`}>
               {mediaConfig.emoji} {article.mediaSource.displayName}
             </span>
+            <time className="text-text-tertiary" dateTime={article.publishedAt.toString()}>
+              {formatRelativeTime(new Date(article.publishedAt))}
+            </time>
           </div>
-          <time className="text-text-tertiary" dateTime={article.publishedAt.toString()}>
-            {formatRelativeTime(new Date(article.publishedAt))}
-          </time>
+          <FavoriteButton
+            articleId={article.id}
+            initialIsFavorited={initialIsFavorited}
+            onAuthRequired={() => setShowAuthModal(true)}
+          />
         </div>
 
         {/* Title */}
@@ -126,5 +131,7 @@ export function ArticleCard({ article, initialIsFavorited = false }: ArticleCard
         </div>
       </article>
     </Link>
+    <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+    </>
   );
 }

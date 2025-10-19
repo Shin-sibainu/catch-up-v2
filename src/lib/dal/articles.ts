@@ -140,22 +140,36 @@ export async function getArticles(params: GetArticlesParams = {}): Promise<GetAr
   const total = countResult.length;
   const totalPages = Math.ceil(total / limit);
 
-  // タグ情報を取得
-  const articlesWithTags: ArticleWithTags[] = await Promise.all(
-    result.map(async ({ article, mediaSource }) => {
-      const articleTagsData = await db
-        .select({ tag: tags })
-        .from(articleTags)
-        .innerJoin(tags, eq(articleTags.tagId, tags.id))
-        .where(eq(articleTags.articleId, article.id));
+  // N+1問題を回避: 全記事のタグを1回のクエリで取得
+  const articleIds = result.map(({ article }) => article.id);
 
-      return {
-        ...article,
-        mediaSource,
-        tags: articleTagsData.map((t) => t.tag),
-      };
-    })
-  );
+  let allArticleTagsData: Array<{ articleId: number; tag: typeof tags.$inferSelect }> = [];
+  if (articleIds.length > 0) {
+    allArticleTagsData = await db
+      .select({
+        articleId: articleTags.articleId,
+        tag: tags,
+      })
+      .from(articleTags)
+      .innerJoin(tags, eq(articleTags.tagId, tags.id))
+      .where(inArray(articleTags.articleId, articleIds));
+  }
+
+  // タグをarticleIdでグループ化
+  const tagsByArticleId = allArticleTagsData.reduce((acc, { articleId, tag }) => {
+    if (!acc[articleId]) {
+      acc[articleId] = [];
+    }
+    acc[articleId].push(tag);
+    return acc;
+  }, {} as Record<number, Array<typeof tags.$inferSelect>>);
+
+  // 記事にタグを結合
+  const articlesWithTags: ArticleWithTags[] = result.map(({ article, mediaSource }) => ({
+    ...article,
+    mediaSource,
+    tags: tagsByArticleId[article.id] || [],
+  }));
 
   return {
     articles: articlesWithTags,

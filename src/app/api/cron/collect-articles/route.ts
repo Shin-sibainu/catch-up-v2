@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm';
 import { QiitaClient } from '@/lib/api/qiita';
 import { ZennClient } from '@/lib/api/zenn';
 import { NoteClient } from '@/lib/api/note';
+import { fetchHatenaArticles } from '@/lib/api/hatena';
 import { generateTagSlug } from '@/lib/utils';
 
 export const runtime = 'nodejs';
@@ -85,6 +86,8 @@ async function collectFromSource(source: typeof mediaSources.$inferSelect) {
       articlesCollected = await collectFromZenn(source.id);
     } else if (source.name === 'note') {
       articlesCollected = await collectFromNote(source.id);
+    } else if (source.name === 'hatena') {
+      articlesCollected = await collectFromHatena(source.id);
     }
 
     console.log(`✓ Collected ${articlesCollected} articles from ${source.displayName}`);
@@ -306,6 +309,72 @@ async function saveTags(articleId: number, tagNames: string[]): Promise<void> {
       console.error(`Error saving tag ${tagName}:`, error);
     }
   }
+}
+
+/**
+ * はてなブログから記事を収集
+ */
+async function collectFromHatena(mediaSourceId: number): Promise<number> {
+  // はてなブログの技術記事RSSを取得
+  const hatenaArticles = await fetchHatenaArticles(50);
+
+  let count = 0;
+
+  for (const article of hatenaArticles) {
+    try {
+      // トレンドスコアを計算（はてなはいいね数がないため、記事の新しさを重視）
+      const hoursSincePublished = (Date.now() - article.publishedAt.getTime()) / (1000 * 60 * 60);
+      const trendScore = Math.max(0, Math.floor(100 - hoursSincePublished * 0.5));
+
+      // 記事を挿入/更新
+      const articleData = {
+        externalId: article.id,
+        mediaSourceId,
+        title: article.title,
+        url: article.url,
+        description: article.description,
+        body: article.content,
+        likesCount: 0, // はてなブログはRSSにいいね数が含まれない
+        bookmarksCount: 0,
+        commentsCount: 0,
+        viewsCount: 0,
+        trendScore,
+        authorName: article.author.name,
+        authorId: article.author.url || article.author.name,
+        authorProfileUrl: article.author.url,
+        publishedAt: article.publishedAt,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      await db
+        .insert(articles)
+        .values(articleData)
+        .onConflictDoUpdate({
+          target: articles.url,
+          set: {
+            trendScore: articleData.trendScore,
+            updatedAt: new Date(),
+          },
+        });
+
+      // 記事IDを取得
+      const [savedArticle] = await db
+        .select()
+        .from(articles)
+        .where(eq(articles.url, articleData.url))
+        .limit(1);
+
+      // タグを保存（はてなブログのカテゴリをタグとして保存）
+      await saveTags(savedArticle.id, article.categories);
+
+      count++;
+    } catch (error) {
+      console.error(`Error saving Hatena article ${article.id}:`, error);
+    }
+  }
+
+  return count;
 }
 
 /**

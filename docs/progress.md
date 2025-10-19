@@ -1,7 +1,7 @@
 # 開発進捗管理
 
 **最終更新**: 2025-10-19
-**現在のフェーズ**: Phase 1 MVP - Week 5-6（デプロイ準備中）
+**現在のフェーズ**: Phase 2 - Week 2 完了（お気に入り機能）
 **現在のブランチ**: develop
 
 ---
@@ -42,7 +42,7 @@
   - [x] データパース処理
   - [x] エラーハンドリング
 - [x] note.com API 連携
-  - [x] API クライアント実装（非公式API v3）
+  - [x] API クライアント実装（非公式 API v3）
   - [x] データパース処理
   - [x] 有料記事フィルタリング
   - [x] ブロックリスト機能
@@ -156,11 +156,44 @@
 
 ---
 
-## Phase 2: ユーザー機能（今後）
+## Phase 2: ユーザー機能
 
-- [ ] Better Auth セットアップ
-- [ ] ユーザー認証機能
-- [ ] お気に入り機能
+### Week 1: 認証機能
+
+- [x] Better Auth セットアップ
+- [x] ユーザー認証機能
+  - [x] メール/パスワード認証
+  - [x] Google OAuth 認証
+  - [x] セッション管理
+  - [x] 認証モーダルコンポーネント
+  - [x] ヘッダーにログイン/ログアウトボタン
+
+### Week 2: お気に入り機能
+
+- [x] データベース設計
+  - [x] favorites テーブル作成
+  - [x] マイグレーション実行
+- [x] DAL (Data Access Layer) 実装
+  - [x] addFavorite - お気に入り追加
+  - [x] removeFavorite - お気に入り削除
+  - [x] getUserFavorites - ユーザーのお気に入り取得（ページネーション対応）
+  - [x] isFavorited - お気に入り状態チェック
+  - [x] checkFavorites - 複数記事の一括チェック（N+1対策）
+- [x] API Routes 実装
+  - [x] POST /api/favorites - お気に入り追加
+  - [x] DELETE /api/favorites - お気に入り削除
+  - [x] GET /api/favorites - お気に入り一覧取得
+  - [x] GET /api/favorites/check - お気に入り状態一括チェック
+- [x] フロントエンド実装
+  - [x] FavoriteButton コンポーネント
+  - [x] ArticleCard にお気に入りボタン統合
+  - [x] ArticlesList でお気に入り状態表示
+  - [x] /favorites ページ（お気に入り一覧）
+  - [x] 未ログイン時の認証モーダル表示
+- [x] Footer を常に最下部に配置（flexbox layout）
+
+### Week 3-4: 今後の予定
+
 - [ ] 既読管理
 - [ ] マイページ
 
@@ -178,21 +211,21 @@
 
 ### 完了した追加機能
 
-- [x] note.com 統合（非公式API v3）
+- [x] note.com 統合（非公式 API v3）
   - 有料記事フィルタリング
   - ブロックリスト機能
-  - 52件の無料技術記事を収集
+  - 52 件の無料技術記事を収集
 - [x] ISR (Incremental Static Regeneration) 実装
-  - 1時間ごとの再検証
+  - 1 時間ごとの再検証
   - サーバー側キャッシュによる高速化
 - [x] DAL (Data Access Layer) 実装
-  - コード削減: /api/articles (195行 → 56行)
+  - コード削減: /api/articles (195 行 → 56 行)
   - 保守性とテスタビリティの向上
 - [x] メディア別視覚的区別
   - カラーコーディング（Qiita: #55C500, Zenn: #3EA8FF, note: #41C9B4）
   - 絵文字バッジ（📗 Qiita, ⚡ Zenn, 📝 note）
-- [x] OGP画像動的生成 (/api/og)
-- [x] PWAマニフェスト & SVG favicon
+- [x] OGP 画像動的生成 (/api/og)
+- [x] PWA マニフェスト & SVG favicon
 - [x] 初期ページネーション修正
 
 ### 技術的な課題
@@ -201,7 +234,7 @@
 
 ### 改善案
 
-- E2Eテストの追加
+- E2E テストの追加
 - パフォーマンステストの実施
 
 ### 参考リンク

@@ -2,7 +2,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { HomeContent } from "@/components/HomeContent";
 import { getArticles } from "@/lib/dal/articles";
 
-export const revalidate = 3600; // 1時間ごとに再検証
+export const revalidate = 21600; // 6時間ごとに再検証（Cron Jobと同期）
 
 export default async function Home() {
   const initialData = await getArticles({ limit: 12, sort: 'trend' });

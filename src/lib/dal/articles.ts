@@ -1,5 +1,5 @@
 import { db, articles, mediaSources, tags, articleTags } from '@/db';
-import { eq, and, or, like, inArray, desc, gte } from 'drizzle-orm';
+import { eq, and, or, like, inArray, desc, gte, count } from 'drizzle-orm';
 import type { ArticleWithTags } from '@/types';
 
 export interface GetArticlesParams {
@@ -127,17 +127,14 @@ export async function getArticles(params: GetArticlesParams = {}): Promise<GetAr
     .limit(limit)
     .offset(offset);
 
-  // 総件数取得
+  // 総件数取得（COUNT クエリで高速化）
   const countResult = await db
-    .select({
-      article: articles,
-      mediaSource: mediaSources,
-    })
+    .select({ count: count() })
     .from(articles)
     .innerJoin(mediaSources, eq(articles.mediaSourceId, mediaSources.id))
     .where(and(...conditions));
 
-  const total = countResult.length;
+  const total = countResult[0]?.count ?? 0;
   const totalPages = Math.ceil(total / limit);
 
   // N+1問題を回避: 全記事のタグを1回のクエリで取得

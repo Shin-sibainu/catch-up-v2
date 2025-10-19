@@ -107,20 +107,22 @@ export function ArticleCard({ article, initialIsFavorited = false }: ArticleCard
 
         {/* Footer - Author & Stats */}
         <div className="flex items-center justify-between border-t border-border/30 pt-4">
-          {/* Author */}
-          <div className="flex items-center gap-2">
-            {article.authorAvatarUrl && (
-              <img
-                src={article.authorAvatarUrl}
-                alt={article.authorName}
-                className="h-6 w-6 rounded-full"
-              />
-            )}
-            <span className="text-sm text-text-secondary">{article.authorName}</span>
-          </div>
+          {/* Author - はてなブログ以外の場合のみ表示 */}
+          {article.mediaSource.name !== 'hatena' && (
+            <div className="flex items-center gap-2">
+              {article.authorAvatarUrl && (
+                <img
+                  src={article.authorAvatarUrl}
+                  alt={article.authorName}
+                  className="h-6 w-6 rounded-full"
+                />
+              )}
+              <span className="text-sm text-text-secondary">{article.authorName}</span>
+            </div>
+          )}
 
           {/* Stats */}
-          <div className="flex items-center gap-4 text-sm text-text-tertiary">
+          <div className={`flex items-center gap-4 text-sm text-text-tertiary ${article.mediaSource.name === 'hatena' ? 'ml-auto' : ''}`}>
             {article.likesCount > 0 && (
               <div className="flex items-center gap-1">
                 <span>❤️</span>

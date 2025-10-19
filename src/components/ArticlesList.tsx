@@ -13,14 +13,15 @@ interface ArticlesListProps {
     sort: 'trend' | 'likes' | 'bookmarks' | 'latest';
   };
   initialArticles: ArticleWithTags[];
+  initialTotalPages: number;
 }
 
-export function ArticlesList({ filters, initialArticles }: ArticlesListProps) {
+export function ArticlesList({ filters, initialArticles, initialTotalPages }: ArticlesListProps) {
   const [articles, setArticles] = useState<ArticleWithTags[]>(initialArticles);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
 
   const fetchArticles = useCallback(async () => {
     try {
@@ -74,12 +75,12 @@ export function ArticlesList({ filters, initialArticles }: ArticlesListProps) {
     if (hasFilters || page > 1) {
       fetchArticles();
     } else {
-      // フィルターなし & 1ページ目 = 初期データを使用
+      // フィルターなし & 1ページ目 = 初期データを使用（ISR最適化）
       setArticles(initialArticles);
-      setTotalPages(1);
+      setTotalPages(initialTotalPages);
       setLoading(false);
     }
-  }, [fetchArticles, initialArticles, filters, page]);
+  }, [fetchArticles, initialArticles, initialTotalPages, filters, page]);
 
   // フィルター変更時はページを1にリセット
   useEffect(() => {

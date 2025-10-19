@@ -7,9 +7,10 @@ import type { ArticleWithTags } from '@/types';
 
 interface HomeContentProps {
   initialArticles: ArticleWithTags[];
+  initialTotalPages: number;
 }
 
-export function HomeContent({ initialArticles }: HomeContentProps) {
+export function HomeContent({ initialArticles, initialTotalPages }: HomeContentProps) {
   const [filters, setFilters] = useState({
     media: [] as string[],
     period: 'all' as 'day' | 'week' | 'month' | 'all',
@@ -44,7 +45,11 @@ export function HomeContent({ initialArticles }: HomeContentProps) {
           </details>
         </div>
 
-        <ArticlesList filters={filters} initialArticles={initialArticles} />
+        <ArticlesList
+          filters={filters}
+          initialArticles={initialArticles}
+          initialTotalPages={initialTotalPages}
+        />
       </main>
     </>
   );

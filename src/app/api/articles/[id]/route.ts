@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, articles, tags, articleTags, mediaSources } from '@/db';
-import { eq } from 'drizzle-orm';
-import type { ArticleWithTags } from '@/types';
+import { getArticleById } from '@/lib/dal/articles';
 
 export const runtime = 'nodejs';
 
@@ -24,12 +22,7 @@ export async function GET(
       );
     }
 
-    // 記事を取得
-    const [article] = await db
-      .select()
-      .from(articles)
-      .where(eq(articles.id, articleId))
-      .limit(1);
+    const article = await getArticleById(articleId);
 
     if (!article) {
       return NextResponse.json(
@@ -38,27 +31,7 @@ export async function GET(
       );
     }
 
-    // タグを取得
-    const articleTagList = await db
-      .select({ tag: tags })
-      .from(articleTags)
-      .innerJoin(tags, eq(articleTags.tagId, tags.id))
-      .where(eq(articleTags.articleId, article.id));
-
-    // メディアソースを取得
-    const [mediaSource] = await db
-      .select()
-      .from(mediaSources)
-      .where(eq(mediaSources.id, article.mediaSourceId))
-      .limit(1);
-
-    const articleWithTags: ArticleWithTags = {
-      ...article,
-      tags: articleTagList.map((at) => at.tag),
-      mediaSource,
-    };
-
-    return NextResponse.json(articleWithTags);
+    return NextResponse.json(article);
   } catch (error) {
     console.error('Error fetching article:', error);
     return NextResponse.json(

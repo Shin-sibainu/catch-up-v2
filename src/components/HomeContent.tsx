@@ -3,8 +3,13 @@
 import { useState } from 'react';
 import { FilterBar } from '@/components/FilterBar';
 import { ArticlesList } from '@/components/ArticlesList';
+import type { ArticleWithTags } from '@/types';
 
-export function HomeContent() {
+interface HomeContentProps {
+  initialArticles: ArticleWithTags[];
+}
+
+export function HomeContent({ initialArticles }: HomeContentProps) {
   const [filters, setFilters] = useState({
     media: [] as string[],
     period: 'all' as 'day' | 'week' | 'month' | 'all',
@@ -39,7 +44,7 @@ export function HomeContent() {
           </details>
         </div>
 
-        <ArticlesList filters={filters} />
+        <ArticlesList filters={filters} initialArticles={initialArticles} />
       </main>
     </>
   );

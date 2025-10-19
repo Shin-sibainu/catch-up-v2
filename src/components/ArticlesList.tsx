@@ -12,11 +12,12 @@ interface ArticlesListProps {
     search: string;
     sort: 'trend' | 'likes' | 'bookmarks' | 'latest';
   };
+  initialArticles: ArticleWithTags[];
 }
 
-export function ArticlesList({ filters }: ArticlesListProps) {
-  const [articles, setArticles] = useState<ArticleWithTags[]>([]);
-  const [loading, setLoading] = useState(true);
+export function ArticlesList({ filters, initialArticles }: ArticlesListProps) {
+  const [articles, setArticles] = useState<ArticleWithTags[]>(initialArticles);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -61,13 +62,29 @@ export function ArticlesList({ filters }: ArticlesListProps) {
   }, [page, filters]);
 
   useEffect(() => {
-    fetchArticles();
-  }, [fetchArticles]);
+    // フィルターが適用されているかチェック
+    const hasFilters =
+      filters.media.length > 0 ||
+      filters.period !== 'all' ||
+      filters.tags.length > 0 ||
+      filters.search !== '' ||
+      filters.sort !== 'trend';
+
+    // フィルターが適用されているか、ページが1以外の場合のみAPIを呼ぶ
+    if (hasFilters || page > 1) {
+      fetchArticles();
+    } else {
+      // フィルターなし & 1ページ目 = 初期データを使用
+      setArticles(initialArticles);
+      setTotalPages(1);
+      setLoading(false);
+    }
+  }, [fetchArticles, initialArticles, filters, page]);
 
   // フィルター変更時はページを1にリセット
   useEffect(() => {
     setPage(1);
-  }, [filters]);
+  }, [filters.media, filters.period, filters.tags, filters.search, filters.sort]);
 
   if (error && articles.length === 0) {
     return (

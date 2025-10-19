@@ -1,7 +1,8 @@
 # 開発進捗管理
 
-**最終更新**: 2025-10-18
-**現在のフェーズ**: Phase 1 MVP
+**最終更新**: 2025-10-19
+**現在のフェーズ**: Phase 1 MVP - Week 5-6（デプロイ準備中）
+**現在のブランチ**: develop
 
 ---
 
@@ -40,6 +41,11 @@
   - [x] API クライアント実装
   - [x] データパース処理
   - [x] エラーハンドリング
+- [x] note.com API 連携
+  - [x] API クライアント実装（非公式API v3）
+  - [x] データパース処理
+  - [x] 有料記事フィルタリング
+  - [x] ブロックリスト機能
 - [x] バッチ処理本体
   - [x] `/app/api/cron/collect-articles/route.ts` 実装
   - [x] トレンドスコア計算ロジック
@@ -60,9 +66,14 @@
   - [x] フィルタリングロジック
   - [x] ソート処理
   - [x] レスポンス型定義
+  - [x] ISR (Incremental Static Regeneration) 実装
+  - [x] DAL (Data Access Layer) リファクタリング
 - [x] GET /api/articles/[id] - 記事詳細取得
+  - [x] DAL リファクタリング
 - [x] GET /api/tags - タグ一覧取得
+  - [x] ISR 実装
 - [x] GET /api/media-sources - メディアソース一覧取得
+  - [x] ISR 実装
 
 #### フロントエンド - コンポーネント実装
 
@@ -78,6 +89,8 @@
 - [x] 記事カードコンポーネント
   - [x] メタ情報表示
   - [x] ホバーアニメーション
+  - [x] メディア別カラーコーディング（Qiita/Zenn/note）
+  - [x] 絵文字バッジ表示（📗/⚡/📝）
 - [x] フィルターバーコンポーネント
   - [x] メディア別フィルター
   - [x] 期間別フィルター
@@ -130,15 +143,15 @@
 - [x] 環境変数の設定（Vercel）
 - [x] ビルドエラーの解消
 - [x] SEO 設定（metadata）
-- [ ] OGP 画像設定
-- [ ] favicon 設定
+- [x] OGP 画像設定（/api/og 実装済み）
+- [x] favicon 設定（SVG + PWA manifest）
 
 #### デプロイ
 
-- [ ] Vercel への初回デプロイ
+- [x] Vercel への初回デプロイ
 - [x] Vercel Cron Jobs 設定（vercel.json）
 - [ ] Cron Job 動作確認
-- [ ] 本番環境での動作確認
+- [x] 本番環境での動作確認
 - [ ] パフォーマンスモニタリング設定
 
 ---
@@ -163,13 +176,33 @@
 
 ## メモ・課題
 
+### 完了した追加機能
+
+- [x] note.com 統合（非公式API v3）
+  - 有料記事フィルタリング
+  - ブロックリスト機能
+  - 52件の無料技術記事を収集
+- [x] ISR (Incremental Static Regeneration) 実装
+  - 1時間ごとの再検証
+  - サーバー側キャッシュによる高速化
+- [x] DAL (Data Access Layer) 実装
+  - コード削減: /api/articles (195行 → 56行)
+  - 保守性とテスタビリティの向上
+- [x] メディア別視覚的区別
+  - カラーコーディング（Qiita: #55C500, Zenn: #3EA8FF, note: #41C9B4）
+  - 絵文字バッジ（📗 Qiita, ⚡ Zenn, 📝 note）
+- [x] OGP画像動的生成 (/api/og)
+- [x] PWAマニフェスト & SVG favicon
+- [x] 初期ページネーション修正
+
 ### 技術的な課題
 
--
+- ブランチ戦略を導入（master/develop）
 
 ### 改善案
 
--
+- E2Eテストの追加
+- パフォーマンステストの実施
 
 ### 参考リンク
 

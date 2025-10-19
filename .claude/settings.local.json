@@ -50,7 +50,8 @@
       "mcp__chrome-devtools__new_page",
       "Bash(node:*)",
       "mcp__chrome-devtools__performance_start_trace",
-      "mcp__chrome-devtools__performance_analyze_insight"
+      "mcp__chrome-devtools__performance_analyze_insight",
+      "Bash(git checkout -b develop)"
     ],
     "deny": [],
     "ask": []

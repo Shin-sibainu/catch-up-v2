@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm';
 import { QiitaClient } from '@/lib/api/qiita';
 import { ZennClient } from '@/lib/api/zenn';
 import { NoteClient } from '@/lib/api/note';
-import { fetchHatenaArticles } from '@/lib/api/hatena';
+import { fetchHatenaArticles, fetchHatenaBookmarkCount } from '@/lib/api/hatena';
 import { generateTagSlug } from '@/lib/utils';
 
 export const runtime = 'nodejs';
@@ -322,9 +322,15 @@ async function collectFromHatena(mediaSourceId: number): Promise<number> {
 
   for (const article of hatenaArticles) {
     try {
-      // トレンドスコアを計算（はてなはいいね数がないため、記事の新しさを重視）
+      // はてなブックマーク数を取得
+      const bookmarksCount = await fetchHatenaBookmarkCount(article.url);
+
+      // トレンドスコアを計算（ブックマーク数と記事の新しさを考慮）
       const hoursSincePublished = (Date.now() - article.publishedAt.getTime()) / (1000 * 60 * 60);
-      const trendScore = Math.max(0, Math.floor(100 - hoursSincePublished * 0.5));
+      const trendScore = Math.max(
+        0,
+        Math.floor(bookmarksCount * 3 + (100 - hoursSincePublished * 0.5))
+      );
 
       // 記事を挿入/更新
       const articleData = {
@@ -335,7 +341,7 @@ async function collectFromHatena(mediaSourceId: number): Promise<number> {
         description: article.description,
         body: article.content,
         likesCount: 0, // はてなブログはRSSにいいね数が含まれない
-        bookmarksCount: 0,
+        bookmarksCount,
         commentsCount: 0,
         viewsCount: 0,
         trendScore,
@@ -353,6 +359,7 @@ async function collectFromHatena(mediaSourceId: number): Promise<number> {
         .onConflictDoUpdate({
           target: articles.url,
           set: {
+            bookmarksCount: articleData.bookmarksCount,
             trendScore: articleData.trendScore,
             updatedAt: new Date(),
           },

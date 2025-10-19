@@ -26,14 +26,11 @@ export interface HatenaArticle {
 const HATENA_TECH_BLOGS = [
   'https://developer.hatenastaff.com/rss',           // はてな
   'https://devblog.thebase.in/rss',                  // BASE
-  'https://techblog.yahoo.co.jp/rss',                // Yahoo! JAPAN
   'https://engineering.mercari.com/blog/feed.xml',   // メルカリ
   'https://tech.smarthr.jp/rss',                     // SmartHR
   'https://blog.cybozu.io/rss',                      // サイボウズ
   'https://tech.gunosy.io/rss',                      // Gunosy
   'https://techlife.cookpad.com/rss',                // クックパッド
-  'https://tech.pepabo.com/rss',                     // ペパボ
-  'https://zozotech-inc.github.io/feed.xml',         // ZOZO
 ];
 
 const parser: Parser = new Parser({
@@ -80,6 +77,9 @@ export async function fetchHatenaArticles(limit = 20): Promise<HatenaArticle[]> 
     for (const item of limitedItems) {
       if (!item.link || !item.title) continue;
 
+      // 著者名を抽出（記事本文から id:xxx を抽出、または feed.title を使用）
+      const authorName = extractAuthorName(item.content || '', item.link);
+
       const article: HatenaArticle = {
         id: generateIdFromUrl(item.link),
         title: item.title,
@@ -88,7 +88,7 @@ export async function fetchHatenaArticles(limit = 20): Promise<HatenaArticle[]> 
         content: (item as { contentEncoded?: string }).contentEncoded || item.content || '',
         publishedAt: item.pubDate ? new Date(item.pubDate) : new Date(),
         author: {
-          name: (item as { creator?: string }).creator || item.creator || 'Unknown',
+          name: authorName,
           url: extractBlogUrl(item.link),
         },
         categories: item.categories || [],
@@ -102,6 +102,27 @@ export async function fetchHatenaArticles(limit = 20): Promise<HatenaArticle[]> 
   } catch (error) {
     console.error('❌ Hatena API Error:', error);
     throw error;
+  }
+}
+
+/**
+ * はてなブックマーク数を取得
+ */
+export async function fetchHatenaBookmarkCount(url: string): Promise<number> {
+  try {
+    const response = await fetch(
+      `https://bookmark.hatenaapis.com/count/entry?url=${encodeURIComponent(url)}`
+    );
+
+    if (!response.ok) {
+      return 0;
+    }
+
+    const count = await response.json();
+    return typeof count === 'number' ? count : 0;
+  } catch (error) {
+    console.error(`Failed to fetch bookmark count for ${url}:`, error);
+    return 0;
   }
 }
 
@@ -123,5 +144,40 @@ function extractBlogUrl(url: string): string {
     return `${urlObj.protocol}//${urlObj.host}`;
   } catch {
     return '';
+  }
+}
+
+/**
+ * 記事本文またはURLから著者名を抽出
+ */
+function extractAuthorName(content: string, url: string): string {
+  // 記事本文から最初の id:xxx を抽出
+  const idMatch = content.match(/id:([a-zA-Z0-9_-]+)/);
+  if (idMatch && idMatch[1]) {
+    return idMatch[1];
+  }
+
+  // URLからブログ名を抽出（例: developer.hatenastaff.com → Hatena Developer Blog）
+  try {
+    const urlObj = new URL(url);
+    const hostname = urlObj.hostname;
+
+    // よく知られたブログのマッピング
+    const blogNames: { [key: string]: string } = {
+      'developer.hatenastaff.com': 'Hatena Developer Blog',
+      'devblog.thebase.in': 'BASE',
+      'techblog.yahoo.co.jp': 'Yahoo! JAPAN',
+      'engineering.mercari.com': 'Mercari',
+      'tech.smarthr.jp': 'SmartHR',
+      'blog.cybozu.io': 'Cybozu',
+      'tech.gunosy.io': 'Gunosy',
+      'techlife.cookpad.com': 'Cookpad',
+      'tech.pepabo.com': 'Pepabo',
+      'zozotech-inc.github.io': 'ZOZO',
+    };
+
+    return blogNames[hostname] || hostname;
+  } catch {
+    return 'Unknown';
   }
 }

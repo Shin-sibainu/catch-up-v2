@@ -36,6 +36,12 @@ export function ArticleCard({ article, initialIsFavorited = false }: ArticleCard
           border: 'border-l-[#41C9B4]',
           emoji: '📝',
         };
+      case 'hatena':
+        return {
+          badge: 'bg-[#00A4DE]/20 text-[#00A4DE]',
+          border: 'border-l-[#00A4DE]',
+          emoji: 'はてな',
+        };
       default:
         return {
           badge: 'bg-primary/20 text-primary',

@@ -26,9 +26,9 @@ export default function TermsPage() {
             <div className="space-y-4 text-text-secondary leading-relaxed">
               <p>本サービスは以下の外部サービスから記事情報を取得しています：</p>
               <ul className="list-disc list-inside space-y-2 ml-4">
-                <li><strong>Qiita</strong>: 公式APIを使用</li>
-                <li><strong>Zenn</strong>: 公式Feed/APIを使用</li>
-                <li><strong>note.com</strong>: 検索機能を使用（非公式）</li>
+                <li><strong>Qiita</strong>: 公式API v2を使用</li>
+                <li><strong>Zenn</strong>: 非公式APIを使用（公式ドキュメントなし）</li>
+                <li><strong>note.com</strong>: 非公式APIを使用（検索機能）</li>
               </ul>
             </div>
           </section>
@@ -37,12 +37,12 @@ export default function TermsPage() {
             <h2 className="mb-4 text-2xl font-semibold text-text-primary">3. 免責事項</h2>
             <div className="space-y-4 text-text-secondary leading-relaxed">
               <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded">
-                <p className="font-semibold text-amber-800 mb-2">⚠️ note.com の利用について</p>
+                <p className="font-semibold text-amber-800 mb-2">⚠️ 非公式API の利用について</p>
                 <p className="text-amber-700">
-                  本サービスはnote.comの検索機能を利用しています。
-                  これは非公式な方法であり、note.com側の仕様変更により、
-                  予告なく機能が停止する可能性があります。
-                  現在、note.comに対して正式な利用許可を問い合わせ中です。
+                  本サービスはZennとnote.comの非公式APIを利用しています。
+                  Zennは公式なAPIドキュメントが提供されておらず、note.comは検索機能を利用しています。
+                  これらのサービス側の仕様変更により、予告なく機能が停止する可能性があります。
+                  現在、両サービスに対して正式な利用許可を問い合わせ中です。
                 </p>
               </div>
 

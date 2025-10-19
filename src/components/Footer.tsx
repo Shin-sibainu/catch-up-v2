@@ -49,7 +49,7 @@ export function Footer() {
             </h3>
             <p className="text-xs text-text-tertiary leading-relaxed">
               記事の著作権は各プラットフォームおよび著者に帰属します。
-              note.comは非公式な方法で利用しており、予告なく機能が停止する可能性があります。
+              Zennとnote.comは非公式な方法で利用しており、予告なく機能が停止する可能性があります。
             </p>
           </div>
         </div>

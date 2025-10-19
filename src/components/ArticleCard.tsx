@@ -1,12 +1,20 @@
+'use client';
+
 import Link from 'next/link';
+import { useState } from 'react';
 import { formatRelativeTime, formatNumber } from '@/lib/utils';
 import type { ArticleWithTags } from '@/types';
+import { FavoriteButton } from './FavoriteButton';
+import { AuthModal } from './auth/AuthModal';
 
 interface ArticleCardProps {
   article: ArticleWithTags;
+  initialIsFavorited?: boolean;
 }
 
-export function ArticleCard({ article }: ArticleCardProps) {
+export function ArticleCard({ article, initialIsFavorited = false }: ArticleCardProps) {
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
   // メディアごとの色設定と絵文字
   const getMediaConfig = (mediaName: string) => {
     switch (mediaName) {
@@ -40,14 +48,15 @@ export function ArticleCard({ article }: ArticleCardProps) {
   const mediaConfig = getMediaConfig(article.mediaSource.name);
 
   return (
-    <Link
-      href={article.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group block h-full animate-fade-in"
-    >
-      <article className={`glass-card h-full rounded-lg p-6 border-l-4 ${mediaConfig.border} transition-all duration-300 hover-lift hover:border-primary/50`}>
-        {/* Header - Media Source & Time */}
+    <>
+      <Link
+        href={article.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group block h-full animate-fade-in"
+      >
+        <article className={`glass-card h-full rounded-lg p-6 border-l-4 ${mediaConfig.border} transition-all duration-300 hover-lift hover:border-primary/50`}>
+          {/* Header - Media Source & Time + Favorite Button */}
         <div className="mb-3 flex items-center justify-between text-sm">
           <div className="flex items-center gap-2">
             <span className={`rounded-full px-3 py-1 text-xs font-medium ${mediaConfig.badge}`}>

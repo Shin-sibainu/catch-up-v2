@@ -132,23 +132,104 @@ export const crawlLogs = sqliteTable(
 
 // ユーザーテーブル (Phase 2)
 export const users = sqliteTable(
-  'users',
+  'user',
   {
-    id: text('id').primaryKey(), // Better Auth ID
+    id: text('id').primaryKey(),
     email: text('email').notNull().unique(),
+    emailVerified: integer('emailVerified', { mode: 'boolean' }).notNull().default(false),
     name: text('name'),
-    avatarUrl: text('avatar_url'),
-    isPremium: integer('is_premium', { mode: 'boolean' }).notNull().default(false),
-    createdAt: integer('created_at', { mode: 'timestamp' })
+    image: text('image'),
+    createdAt: integer('createdAt', { mode: 'timestamp' })
       .notNull()
       .$defaultFn(() => new Date()),
-    updatedAt: integer('updated_at', { mode: 'timestamp' })
+    updatedAt: integer('updatedAt', { mode: 'timestamp' })
       .notNull()
       .$defaultFn(() => new Date())
       .$onUpdateFn(() => new Date()),
   },
   (table) => ({
     emailIdx: index('idx_users_email').on(table.email),
+  })
+);
+
+// Better Auth - セッションテーブル
+export const sessions = sqliteTable('session', {
+  id: text('id').primaryKey(),
+  expiresAt: integer('expiresAt', { mode: 'timestamp' }).notNull(),
+  token: text('token').notNull().unique(),
+  ipAddress: text('ipAddress'),
+  userAgent: text('userAgent'),
+  userId: text('userId')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  createdAt: integer('createdAt', { mode: 'timestamp' })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  updatedAt: integer('updatedAt', { mode: 'timestamp' })
+    .notNull()
+    .$defaultFn(() => new Date())
+    .$onUpdateFn(() => new Date()),
+});
+
+// Better Auth - アカウントテーブル (ソーシャルログイン用)
+export const accounts = sqliteTable('account', {
+  id: text('id').primaryKey(),
+  accountId: text('accountId').notNull(),
+  providerId: text('providerId').notNull(),
+  userId: text('userId')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  accessToken: text('accessToken'),
+  refreshToken: text('refreshToken'),
+  idToken: text('idToken'),
+  accessTokenExpiresAt: integer('accessTokenExpiresAt', { mode: 'timestamp' }),
+  refreshTokenExpiresAt: integer('refreshTokenExpiresAt', { mode: 'timestamp' }),
+  scope: text('scope'),
+  password: text('password'),
+  createdAt: integer('createdAt', { mode: 'timestamp' })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  updatedAt: integer('updatedAt', { mode: 'timestamp' })
+    .notNull()
+    .$defaultFn(() => new Date())
+    .$onUpdateFn(() => new Date()),
+});
+
+// Better Auth - 検証テーブル (メール認証用)
+export const verifications = sqliteTable('verification', {
+  id: text('id').primaryKey(),
+  identifier: text('identifier').notNull(),
+  value: text('value').notNull(),
+  expiresAt: integer('expiresAt', { mode: 'timestamp' }).notNull(),
+  createdAt: integer('createdAt', { mode: 'timestamp' })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  updatedAt: integer('updatedAt', { mode: 'timestamp' })
+    .notNull()
+    .$defaultFn(() => new Date())
+    .$onUpdateFn(() => new Date()),
+});
+
+// お気に入りテーブル (Phase 2 Week 2)
+export const favorites = sqliteTable(
+  'favorites',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    articleId: integer('article_id')
+      .notNull()
+      .references(() => articles.id, { onDelete: 'cascade' }),
+    createdAt: integer('created_at', { mode: 'timestamp' })
+      .notNull()
+      .$defaultFn(() => new Date()),
+  },
+  (table) => ({
+    // 同じユーザーが同じ記事を複数回お気に入りできないようにする
+    uniqueUserArticle: primaryKey({ columns: [table.userId, table.articleId] }),
+    userIdx: index('idx_favorites_user').on(table.userId),
+    articleIdx: index('idx_favorites_article').on(table.articleId),
   })
 );
 
@@ -170,3 +251,15 @@ export type InsertCrawlLog = typeof crawlLogs.$inferInsert;
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
+
+export type Session = typeof sessions.$inferSelect;
+export type InsertSession = typeof sessions.$inferInsert;
+
+export type Account = typeof accounts.$inferSelect;
+export type InsertAccount = typeof accounts.$inferInsert;
+
+export type Verification = typeof verifications.$inferSelect;
+export type InsertVerification = typeof verifications.$inferInsert;
+
+export type Favorite = typeof favorites.$inferSelect;
+export type InsertFavorite = typeof favorites.$inferInsert;

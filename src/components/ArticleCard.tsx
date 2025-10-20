@@ -80,7 +80,7 @@ export function ArticleCard({ article, initialIsFavorited = false }: ArticleCard
         </div>
 
         {/* Title */}
-        <h2 className="mb-3 line-clamp-2 text-xl font-bold text-text-primary transition-colors group-hover:text-primary">
+        <h2 className="mb-3 line-clamp-2 text-xl font-bold text-text-primary transition-colors group-hover:text-primary break-all overflow-hidden">
           {article.title}
         </h2>
 

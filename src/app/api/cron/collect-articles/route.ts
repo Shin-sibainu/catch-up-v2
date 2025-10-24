@@ -9,7 +9,7 @@ import { generateTagSlug } from '@/lib/utils';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-export const maxDuration = 60; // 60秒タイムアウト
+export const maxDuration = 300; // 5分タイムアウト
 
 /**
  * 記事収集バッチ処理

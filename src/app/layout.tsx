@@ -19,34 +19,48 @@ export const metadata: Metadata = {
     default: "Catch Up🔥 - 技術トレンドをキャッチアップ",
     template: "%s | Catch Up🔥",
   },
-  description: "Qiita、Zenn、noteから最新の技術記事を一箇所でキャッチアップ。トレンドスコア順、期間フィルター、タグ検索で効率的に情報収集できます。",
-  keywords: ["技術記事", "Qiita", "Zenn", "note", "プログラミング", "エンジニア", "トレンド", "キャッチアップ"],
+  description:
+    "Qiita、Zenn、noteから最新の技術記事を一箇所でキャッチアップ。トレンドスコア順、期間フィルター、タグ検索で効率的に情報収集できます。",
+  keywords: [
+    "技術記事",
+    "Qiita",
+    "Zenn",
+    "note",
+    "プログラミング",
+    "エンジニア",
+    "トレンド",
+    "キャッチアップ",
+  ],
   authors: [{ name: "Catch Up" }],
   creator: "Catch Up",
   publisher: "Catch Up",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+  ),
   openGraph: {
     title: "Catch Up🔥 - 技術トレンドをキャッチアップ",
-    description: "Qiita、Zenn、noteから最新の技術記事を一箇所でキャッチアップ。トレンドスコア順、期間フィルター、タグ検索で効率的に情報収集できます。",
-    url: '/',
-    siteName: 'Catch Up',
+    description:
+      "Qiita、Zenn、noteから最新の技術記事を一箇所でキャッチアップ。トレンドスコア順、期間フィルター、タグ検索で効率的に情報収集できます。",
+    url: "/",
+    siteName: "Catch Up",
     images: [
       {
-        url: '/api/og',
+        url: "/api/og",
         width: 1200,
         height: 630,
-        alt: 'Catch Up - 技術トレンドをキャッチアップ',
+        alt: "Catch Up - 技術トレンドをキャッチアップ",
       },
     ],
-    locale: 'ja_JP',
-    type: 'website',
+    locale: "ja_JP",
+    type: "website",
   },
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
     title: "Catch Up🔥 - 技術トレンドをキャッチアップ",
-    description: "Qiita、Zenn、noteから最新の技術記事を一箇所でキャッチアップ。",
-    images: ['/api/og'],
-    creator: '@your_twitter_handle', // Twitterアカウントがあれば変更
+    description:
+      "Qiita、Zenn、noteから最新の技術記事を一箇所でキャッチアップ。",
+    images: ["/api/og"],
+    creator: "@your_twitter_handle", // Twitterアカウントがあれば変更
   },
   robots: {
     index: true,
@@ -54,19 +68,19 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
   icons: {
     icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
     ],
-    apple: '/apple-touch-icon.png',
+    apple: "/apple-touch-icon.png",
   },
-  manifest: '/manifest.json',
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
@@ -78,7 +92,7 @@ export default function RootLayout({
     <html lang="ja">
       <head>
         <meta name="theme-color" content="#FFF8F0" />
-        <script defer data-site="cd041291904b7647" src="/ca.js"></script>
+        <script defer data-site="3e3486b5bee331b8" src="/ca.js"></script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col bg-background-primary antialiased`}

@@ -78,6 +78,7 @@ export default function RootLayout({
     <html lang="ja">
       <head>
         <meta name="theme-color" content="#FFF8F0" />
+        <script defer data-site="cd041291904b7647" src="/ca.js"></script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col bg-background-primary antialiased`}

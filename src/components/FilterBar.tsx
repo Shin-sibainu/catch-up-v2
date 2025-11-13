@@ -6,7 +6,7 @@ import type { MediaSource, Tag } from '@/db';
 interface FilterBarProps {
   onFilterChange: (filters: {
     media: string[];
-    period: 'day' | 'week' | 'month' | 'all';
+    period: 'day' | '3days' | 'week' | 'month' | 'all';
     tags: string[];
     search: string;
     sort: 'trend' | 'likes' | 'bookmarks' | 'latest';
@@ -17,7 +17,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
   const [mediaSources, setMediaSources] = useState<MediaSource[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [selectedMedia, setSelectedMedia] = useState<string[]>([]);
-  const [selectedPeriod, setSelectedPeriod] = useState<'day' | 'week' | 'month' | 'all'>('all');
+  const [selectedPeriod, setSelectedPeriod] = useState<'day' | '3days' | 'week' | 'month' | 'all'>('3days');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState<'trend' | 'likes' | 'bookmarks' | 'latest'>('trend');
@@ -26,7 +26,13 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
     // Fetch media sources
     fetch('/api/media-sources?active=true')
       .then((res) => res.json())
-      .then((data) => setMediaSources(data));
+      .then((data) => {
+        // はてなブログとnoteを除外
+        const filteredSources = data.filter(
+          (source: MediaSource) => source.name !== 'hatena' && source.name !== 'note'
+        );
+        setMediaSources(filteredSources);
+      });
 
     // Fetch popular tags
     fetch('/api/tags?limit=20')
@@ -91,7 +97,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
       <div>
         <label className="mb-2 block text-sm font-medium text-text-tertiary">期間</label>
         <div className="grid grid-cols-2 gap-2">
-          {(['all', 'day', 'week', 'month'] as const).map((period) => (
+          {(['3days', 'day', 'week', 'month', 'all'] as const).map((period) => (
             <button
               key={period}
               onClick={() => setSelectedPeriod(period)}
@@ -103,6 +109,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
             >
               {period === 'all' && '全期間'}
               {period === 'day' && '24時間'}
+              {period === '3days' && '3日間'}
               {period === 'week' && '1週間'}
               {period === 'month' && '1ヶ月'}
             </button>
@@ -155,14 +162,14 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
       {(selectedMedia.length > 0 ||
         selectedTags.length > 0 ||
         search ||
-        selectedPeriod !== 'all' ||
+        selectedPeriod !== '3days' ||
         sort !== 'trend') && (
         <button
           onClick={() => {
             setSelectedMedia([]);
             setSelectedTags([]);
             setSearch('');
-            setSelectedPeriod('all');
+            setSelectedPeriod('3days');
             setSort('trend');
           }}
           className="w-full rounded-lg bg-background-tertiary px-4 py-2 text-sm font-medium text-text-secondary hover:bg-background-tertiary/80"

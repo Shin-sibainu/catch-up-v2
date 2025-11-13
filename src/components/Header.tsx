@@ -28,25 +28,6 @@ export function Header() {
 
             {/* Navigation */}
             <nav className="flex items-center gap-6">
-              <Link
-                href="/"
-                className="text-sm font-medium text-text-secondary transition-colors hover:text-primary"
-              >
-                トレンド
-              </Link>
-              <Link
-                href="/#"
-                className="text-sm font-medium text-text-secondary transition-colors hover:text-primary"
-              >
-                タグ
-              </Link>
-              <Link
-                href="/#"
-                className="text-sm font-medium text-text-secondary transition-colors hover:text-primary"
-              >
-                About
-              </Link>
-
               {/* Auth Section */}
               {isPending ? (
                 <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200" />
@@ -75,18 +56,6 @@ export function Header() {
                   {showUserMenu && (
                     <div className="absolute right-0 mt-2 w-48 rounded-md border border-gray-200 bg-white shadow-lg">
                       <div className="p-2">
-                        <Link
-                          href="/profile"
-                          className="block rounded px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        >
-                          プロフィール
-                        </Link>
-                        <Link
-                          href="/favorites"
-                          className="block rounded px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        >
-                          お気に入り
-                        </Link>
                         <button
                           onClick={handleSignOut}
                           className="w-full rounded px-3 py-2 text-left text-sm text-red-600 hover:bg-gray-100"

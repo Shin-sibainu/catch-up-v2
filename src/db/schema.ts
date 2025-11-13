@@ -1,18 +1,25 @@
-import { sqliteTable, text, integer, primaryKey, index } from 'drizzle-orm/sqlite-core';
+import {
+  sqliteTable,
+  text,
+  integer,
+  primaryKey,
+  index,
+  unique,
+} from "drizzle-orm/sqlite-core";
 
 // メディアソーステーブル
-export const mediaSources = sqliteTable('media_sources', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('name').notNull().unique(),
-  displayName: text('display_name').notNull(),
-  baseUrl: text('base_url').notNull(),
-  apiEndpoint: text('api_endpoint'),
-  iconUrl: text('icon_url'),
-  isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
-  createdAt: integer('created_at', { mode: 'timestamp' })
+export const mediaSources = sqliteTable("media_sources", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull().unique(),
+  displayName: text("display_name").notNull(),
+  baseUrl: text("base_url").notNull(),
+  apiEndpoint: text("api_endpoint"),
+  iconUrl: text("icon_url"),
+  isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),
+  createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
-  updatedAt: integer('updated_at', { mode: 'timestamp' })
+  updatedAt: integer("updated_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date())
     .$onUpdateFn(() => new Date()),
@@ -20,41 +27,41 @@ export const mediaSources = sqliteTable('media_sources', {
 
 // 記事テーブル
 export const articles = sqliteTable(
-  'articles',
+  "articles",
   {
-    id: integer('id').primaryKey({ autoIncrement: true }),
-    externalId: text('external_id').notNull(),
-    mediaSourceId: integer('media_source_id')
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    externalId: text("external_id").notNull(),
+    mediaSourceId: integer("media_source_id")
       .notNull()
       .references(() => mediaSources.id),
-    title: text('title').notNull(),
-    url: text('url').notNull().unique(),
-    description: text('description'),
-    body: text('body'),
-    thumbnailUrl: text('thumbnail_url'),
-    likesCount: integer('likes_count').notNull().default(0),
-    bookmarksCount: integer('bookmarks_count').notNull().default(0),
-    commentsCount: integer('comments_count').notNull().default(0),
-    viewsCount: integer('views_count').notNull().default(0),
-    trendScore: integer('trend_score').notNull().default(0),
-    authorName: text('author_name').notNull(),
-    authorId: text('author_id').notNull(),
-    authorProfileUrl: text('author_profile_url'),
-    authorAvatarUrl: text('author_avatar_url'),
-    publishedAt: integer('published_at', { mode: 'timestamp' }).notNull(),
-    createdAt: integer('created_at', { mode: 'timestamp' })
+    title: text("title").notNull(),
+    url: text("url").notNull().unique(),
+    description: text("description"),
+    body: text("body"),
+    thumbnailUrl: text("thumbnail_url"),
+    likesCount: integer("likes_count").notNull().default(0),
+    bookmarksCount: integer("bookmarks_count").notNull().default(0),
+    commentsCount: integer("comments_count").notNull().default(0),
+    viewsCount: integer("views_count").notNull().default(0),
+    trendScore: integer("trend_score").notNull().default(0),
+    authorName: text("author_name").notNull(),
+    authorId: text("author_id").notNull(),
+    authorProfileUrl: text("author_profile_url"),
+    authorAvatarUrl: text("author_avatar_url"),
+    publishedAt: integer("published_at", { mode: "timestamp" }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date()),
-    updatedAt: integer('updated_at', { mode: 'timestamp' })
+    updatedAt: integer("updated_at", { mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date())
       .$onUpdateFn(() => new Date()),
   },
   (table) => ({
-    mediaSourceIdx: index('idx_articles_media_source').on(table.mediaSourceId),
-    trendScoreIdx: index('idx_articles_trend_score').on(table.trendScore),
-    publishedAtIdx: index('idx_articles_published_at').on(table.publishedAt),
-    externalIdIdx: index('idx_articles_external_id').on(
+    mediaSourceIdx: index("idx_articles_media_source").on(table.mediaSourceId),
+    trendScoreIdx: index("idx_articles_trend_score").on(table.trendScore),
+    publishedAtIdx: index("idx_articles_published_at").on(table.publishedAt),
+    externalIdIdx: index("idx_articles_external_id").on(
       table.externalId,
       table.mediaSourceId
     ),
@@ -63,171 +70,185 @@ export const articles = sqliteTable(
 
 // タグテーブル
 export const tags = sqliteTable(
-  'tags',
+  "tags",
   {
-    id: integer('id').primaryKey({ autoIncrement: true }),
-    name: text('name').notNull().unique(),
-    displayName: text('display_name').notNull(),
-    slug: text('slug').notNull().unique(),
-    color: text('color'),
-    iconUrl: text('icon_url'),
-    articleCount: integer('article_count').notNull().default(0),
-    createdAt: integer('created_at', { mode: 'timestamp' })
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    name: text("name").notNull().unique(),
+    displayName: text("display_name").notNull(),
+    slug: text("slug").notNull().unique(),
+    color: text("color"),
+    iconUrl: text("icon_url"),
+    articleCount: integer("article_count").notNull().default(0),
+    createdAt: integer("created_at", { mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date()),
-    updatedAt: integer('updated_at', { mode: 'timestamp' })
+    updatedAt: integer("updated_at", { mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date())
       .$onUpdateFn(() => new Date()),
   },
   (table) => ({
-    nameIdx: index('idx_tags_name').on(table.name),
-    slugIdx: index('idx_tags_slug').on(table.slug),
+    nameIdx: index("idx_tags_name").on(table.name),
+    slugIdx: index("idx_tags_slug").on(table.slug),
   })
 );
 
 // 記事タグ中間テーブル
 export const articleTags = sqliteTable(
-  'article_tags',
+  "article_tags",
   {
-    articleId: integer('article_id')
+    articleId: integer("article_id")
       .notNull()
-      .references(() => articles.id, { onDelete: 'cascade' }),
-    tagId: integer('tag_id')
+      .references(() => articles.id, { onDelete: "cascade" }),
+    tagId: integer("tag_id")
       .notNull()
-      .references(() => tags.id, { onDelete: 'cascade' }),
-    createdAt: integer('created_at', { mode: 'timestamp' })
+      .references(() => tags.id, { onDelete: "cascade" }),
+    createdAt: integer("created_at", { mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date()),
   },
   (table) => ({
     pk: primaryKey({ columns: [table.articleId, table.tagId] }),
-    articleIdx: index('idx_article_tags_article').on(table.articleId),
-    tagIdx: index('idx_article_tags_tag').on(table.tagId),
+    articleIdx: index("idx_article_tags_article").on(table.articleId),
+    tagIdx: index("idx_article_tags_tag").on(table.tagId),
   })
 );
 
 // クロールログテーブル
 export const crawlLogs = sqliteTable(
-  'crawl_logs',
+  "crawl_logs",
   {
-    id: integer('id').primaryKey({ autoIncrement: true }),
-    mediaSourceId: integer('media_source_id')
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    mediaSourceId: integer("media_source_id")
       .notNull()
       .references(() => mediaSources.id),
-    status: text('status', { enum: ['success', 'failed', 'partial'] }).notNull(),
-    articlesCollected: integer('articles_collected').notNull().default(0),
-    errorMessage: text('error_message'),
-    startedAt: integer('started_at', { mode: 'timestamp' }).notNull(),
-    completedAt: integer('completed_at', { mode: 'timestamp' }),
-    createdAt: integer('created_at', { mode: 'timestamp' })
+    status: text("status", {
+      enum: ["success", "failed", "partial"],
+    }).notNull(),
+    articlesCollected: integer("articles_collected").notNull().default(0),
+    errorMessage: text("error_message"),
+    startedAt: integer("started_at", { mode: "timestamp" }).notNull(),
+    completedAt: integer("completed_at", { mode: "timestamp" }),
+    createdAt: integer("created_at", { mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date()),
   },
   (table) => ({
-    mediaSourceIdx: index('idx_crawl_logs_media_source').on(table.mediaSourceId),
-    statusIdx: index('idx_crawl_logs_status').on(table.status),
+    mediaSourceIdx: index("idx_crawl_logs_media_source").on(
+      table.mediaSourceId
+    ),
+    statusIdx: index("idx_crawl_logs_status").on(table.status),
   })
 );
 
 // ユーザーテーブル (Phase 2)
 export const users = sqliteTable(
-  'user',
+  "user",
   {
-    id: text('id').primaryKey(),
-    email: text('email').notNull().unique(),
-    emailVerified: integer('emailVerified', { mode: 'boolean' }).notNull().default(false),
-    name: text('name'),
-    image: text('image'),
-    createdAt: integer('createdAt', { mode: 'timestamp' })
+    id: text("id").primaryKey(),
+    email: text("email").notNull().unique(),
+    emailVerified: integer("emailVerified", { mode: "boolean" })
+      .notNull()
+      .default(false),
+    name: text("name"),
+    image: text("image"),
+    createdAt: integer("createdAt", { mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date()),
-    updatedAt: integer('updatedAt', { mode: 'timestamp' })
+    updatedAt: integer("updatedAt", { mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date())
       .$onUpdateFn(() => new Date()),
   },
   (table) => ({
-    emailIdx: index('idx_users_email').on(table.email),
+    emailIdx: index("idx_users_email").on(table.email),
   })
 );
 
 // Better Auth - セッションテーブル
-export const sessions = sqliteTable('session', {
-  id: text('id').primaryKey(),
-  expiresAt: integer('expiresAt', { mode: 'timestamp' }).notNull(),
-  token: text('token').notNull().unique(),
-  ipAddress: text('ipAddress'),
-  userAgent: text('userAgent'),
-  userId: text('userId')
+export const sessions = sqliteTable("session", {
+  id: text("id").primaryKey(),
+  expiresAt: integer("expiresAt", { mode: "timestamp" }).notNull(),
+  token: text("token").notNull().unique(),
+  ipAddress: text("ipAddress"),
+  userAgent: text("userAgent"),
+  userId: text("userId")
     .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  createdAt: integer('createdAt', { mode: 'timestamp' })
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: integer("createdAt", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
-  updatedAt: integer('updatedAt', { mode: 'timestamp' })
+  updatedAt: integer("updatedAt", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date())
     .$onUpdateFn(() => new Date()),
 });
 
 // Better Auth - アカウントテーブル (ソーシャルログイン用)
-export const accounts = sqliteTable('account', {
-  id: text('id').primaryKey(),
-  accountId: text('accountId').notNull(),
-  providerId: text('providerId').notNull(),
-  userId: text('userId')
+export const accounts = sqliteTable("account", {
+  id: text("id").primaryKey(),
+  accountId: text("accountId").notNull(),
+  providerId: text("providerId").notNull(),
+  userId: text("userId")
     .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  accessToken: text('accessToken'),
-  refreshToken: text('refreshToken'),
-  idToken: text('idToken'),
-  accessTokenExpiresAt: integer('accessTokenExpiresAt', { mode: 'timestamp' }),
-  refreshTokenExpiresAt: integer('refreshTokenExpiresAt', { mode: 'timestamp' }),
-  scope: text('scope'),
-  password: text('password'),
-  createdAt: integer('createdAt', { mode: 'timestamp' })
+    .references(() => users.id, { onDelete: "cascade" }),
+  accessToken: text("accessToken"),
+  refreshToken: text("refreshToken"),
+  idToken: text("idToken"),
+  accessTokenExpiresAt: integer("accessTokenExpiresAt", { mode: "timestamp" }),
+  refreshTokenExpiresAt: integer("refreshTokenExpiresAt", {
+    mode: "timestamp",
+  }),
+  scope: text("scope"),
+  password: text("password"),
+  createdAt: integer("createdAt", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
-  updatedAt: integer('updatedAt', { mode: 'timestamp' })
+  updatedAt: integer("updatedAt", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date())
     .$onUpdateFn(() => new Date()),
 });
 
 // Better Auth - 検証テーブル (メール認証用)
-export const verifications = sqliteTable('verification', {
-  id: text('id').primaryKey(),
-  identifier: text('identifier').notNull(),
-  value: text('value').notNull(),
-  expiresAt: integer('expiresAt', { mode: 'timestamp' }).notNull(),
-  createdAt: integer('createdAt', { mode: 'timestamp' })
+export const verifications = sqliteTable("verification", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: integer("expiresAt", { mode: "timestamp" }).notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
-  updatedAt: integer('updatedAt', { mode: 'timestamp' })
+  updatedAt: integer("updatedAt", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date())
     .$onUpdateFn(() => new Date()),
 });
 
 // お気に入りテーブル (Phase 2 Week 2)
+// URLベースで保存（DBに記事を保存しないため）
 export const favorites = sqliteTable(
-  'favorites',
+  "favorites",
   {
-    id: integer('id').primaryKey({ autoIncrement: true }),
-    userId: text('user_id')
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    userId: text("user_id")
       .notNull()
-      .references(() => users.id, { onDelete: 'cascade' }),
-    articleId: integer('article_id')
-      .notNull()
-      .references(() => articles.id, { onDelete: 'cascade' }),
-    createdAt: integer('created_at', { mode: 'timestamp' })
+      .references(() => users.id, { onDelete: "cascade" }),
+    articleUrl: text("article_url").notNull(),
+    articleTitle: text("article_title"),
+    mediaSourceName: text("media_source_name"),
+    createdAt: integer("created_at", { mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date()),
   },
   (table) => ({
-    userIdx: index('idx_favorites_user').on(table.userId),
-    articleIdx: index('idx_favorites_article').on(table.articleId),
+    userIdx: index("idx_favorites_user").on(table.userId),
+    urlIdx: index("idx_favorites_url").on(table.articleUrl),
+    // 同じユーザーが同じURLを複数回お気に入りに追加できないようにUNIQUE制約
+    userUrlUnique: unique("idx_favorites_user_url_unique").on(
+      table.userId,
+      table.articleUrl
+    ),
   })
 );
 

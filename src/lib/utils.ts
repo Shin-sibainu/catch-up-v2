@@ -35,13 +35,15 @@ export function calculateTrendScore(article: {
  * 期間フィルターに応じた開始日時を取得
  */
 export function getStartDateByPeriod(
-  period: 'day' | 'week' | 'month' | 'all'
+  period: 'day' | '3days' | 'week' | 'month' | 'all'
 ): Date | null {
   const now = new Date();
 
   switch (period) {
     case 'day':
       return new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    case '3days':
+      return new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
     case 'week':
       return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     case 'month':

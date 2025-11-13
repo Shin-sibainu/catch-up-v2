@@ -3,8 +3,6 @@ import { db, mediaSources, articles, tags, articleTags, crawlLogs } from '@/db';
 import { eq } from 'drizzle-orm';
 import { QiitaClient } from '@/lib/api/qiita';
 import { ZennClient } from '@/lib/api/zenn';
-import { NoteClient } from '@/lib/api/note';
-import { fetchHatenaArticles, fetchHatenaBookmarkCount } from '@/lib/api/hatena';
 import { generateTagSlug } from '@/lib/utils';
 
 export const runtime = 'nodejs';
@@ -13,9 +11,21 @@ export const maxDuration = 300; // 5分タイムアウト
 
 /**
  * 記事収集バッチ処理
- * Vercel Cron Jobsから定期的に実行される
+ * ⚠️ 無効化: DBに記事を保存しないため、このエンドポイントは使用されません
+ * 記事は外部APIから直接取得します
  */
 export async function GET(request: NextRequest) {
+  // このエンドポイントは無効化されています
+  return NextResponse.json(
+    {
+      message: 'This endpoint is disabled. Articles are now fetched directly from external APIs.',
+      success: false,
+    },
+    { status: 410 } // Gone
+  );
+
+  // 以下は実行されません（参考用に残しています）
+  /*
   // Cron Jobの認証（本番環境のみ）
   const authHeader = request.headers.get('authorization');
   if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -66,6 +76,7 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+  */
 }
 
 /**
@@ -84,10 +95,6 @@ async function collectFromSource(source: typeof mediaSources.$inferSelect) {
       articlesCollected = await collectFromQiita(source.id);
     } else if (source.name === 'zenn') {
       articlesCollected = await collectFromZenn(source.id);
-    } else if (source.name === 'note') {
-      articlesCollected = await collectFromNote(source.id);
-    } else if (source.name === 'hatena') {
-      articlesCollected = await collectFromHatena(source.id);
     }
 
     console.log(`✓ Collected ${articlesCollected} articles from ${source.displayName}`);
@@ -208,67 +215,6 @@ async function collectFromZenn(mediaSourceId: number): Promise<number> {
   return count;
 }
 
-/**
- * note.comから記事を収集
- */
-async function collectFromNote(mediaSourceId: number): Promise<number> {
-  const client = new NoteClient();
-
-  // 技術系キーワードで記事を取得
-  const noteArticles = await client.fetchArticles({
-    keywords: [
-      'プログラミング',
-      'エンジニア',
-      'Web開発',
-      'React',
-      'Next.js',
-      'TypeScript',
-      'フロントエンド',
-      'バックエンド',
-      'AI',
-      'ChatGPT',
-    ],
-    size: 50,
-  });
-
-  let count = 0;
-
-  for (const article of noteArticles) {
-    try {
-      // 記事を挿入/更新
-      const articleData = client.mapToArticle(article, mediaSourceId);
-      await db
-        .insert(articles)
-        .values(articleData)
-        .onConflictDoUpdate({
-          target: articles.url,
-          set: {
-            likesCount: articleData.likesCount,
-            commentsCount: articleData.commentsCount,
-            trendScore: articleData.trendScore,
-            updatedAt: new Date(),
-          },
-        });
-
-      // 記事IDを取得
-      const [savedArticle] = await db
-        .select()
-        .from(articles)
-        .where(eq(articles.url, articleData.url))
-        .limit(1);
-
-      // タグを保存
-      const tagNames = client.extractTags(article);
-      await saveTags(savedArticle.id, tagNames);
-
-      count++;
-    } catch (error) {
-      console.error(`Error saving article ${article.id}:`, error);
-    }
-  }
-
-  return count;
-}
 
 /**
  * タグを保存し、記事との関連付けを行う
@@ -311,78 +257,6 @@ async function saveTags(articleId: number, tagNames: string[]): Promise<void> {
   }
 }
 
-/**
- * はてなブログから記事を収集
- */
-async function collectFromHatena(mediaSourceId: number): Promise<number> {
-  // はてなブログの技術記事RSSを取得
-  const hatenaArticles = await fetchHatenaArticles(50);
-
-  let count = 0;
-
-  for (const article of hatenaArticles) {
-    try {
-      // はてなブックマーク数を取得
-      const bookmarksCount = await fetchHatenaBookmarkCount(article.url);
-
-      // トレンドスコアを計算（ブックマーク数と記事の新しさを考慮）
-      const hoursSincePublished = (Date.now() - article.publishedAt.getTime()) / (1000 * 60 * 60);
-      const trendScore = Math.max(
-        0,
-        Math.floor(bookmarksCount * 3 + (100 - hoursSincePublished * 0.5))
-      );
-
-      // 記事を挿入/更新
-      const articleData = {
-        externalId: article.id,
-        mediaSourceId,
-        title: article.title,
-        url: article.url,
-        description: article.description,
-        body: article.content,
-        likesCount: 0, // はてなブログはRSSにいいね数が含まれない
-        bookmarksCount,
-        commentsCount: 0,
-        viewsCount: 0,
-        trendScore,
-        authorName: article.author.name,
-        authorId: article.author.url || article.author.name,
-        authorProfileUrl: article.author.url,
-        publishedAt: article.publishedAt,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      await db
-        .insert(articles)
-        .values(articleData)
-        .onConflictDoUpdate({
-          target: articles.url,
-          set: {
-            bookmarksCount: articleData.bookmarksCount,
-            trendScore: articleData.trendScore,
-            updatedAt: new Date(),
-          },
-        });
-
-      // 記事IDを取得
-      const [savedArticle] = await db
-        .select()
-        .from(articles)
-        .where(eq(articles.url, articleData.url))
-        .limit(1);
-
-      // タグを保存（はてなブログのカテゴリをタグとして保存）
-      await saveTags(savedArticle.id, article.categories);
-
-      count++;
-    } catch (error) {
-      console.error(`Error saving Hatena article ${article.id}:`, error);
-    }
-  }
-
-  return count;
-}
 
 /**
  * 1週間前の日付を取得（ISO 8601形式）

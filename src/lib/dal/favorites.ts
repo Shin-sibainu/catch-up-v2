@@ -1,31 +1,46 @@
-import { db, favorites, articles, mediaSources, tags, articleTags } from '@/db';
-import { eq, and, desc, inArray } from 'drizzle-orm';
-import type { ArticleWithTags } from '@/types';
+import { db, favorites } from "@/db";
+import { eq, and, desc, inArray } from "drizzle-orm";
+
+export interface FavoriteArticle {
+  url: string;
+  title: string;
+  mediaSourceName: string;
+  favoritedAt: Date;
+}
 
 /**
  * お気に入りを追加
  */
-export async function addFavorite(userId: string, articleId: number) {
+export async function addFavorite(
+  userId: string,
+  articleUrl: string,
+  articleTitle?: string,
+  mediaSourceName?: string
+) {
   try {
     await db.insert(favorites).values({
       userId,
-      articleId,
+      articleUrl,
+      articleTitle: articleTitle || null,
+      mediaSourceName: mediaSourceName || null,
       createdAt: new Date(),
     });
     return { success: true };
   } catch (error) {
     // UNIQUE制約違反の場合は既にお気に入り済み
-    return { success: false, error: 'Already favorited' };
+    return { success: false, error: "Already favorited" };
   }
 }
 
 /**
  * お気に入りを削除
  */
-export async function removeFavorite(userId: string, articleId: number) {
+export async function removeFavorite(userId: string, articleUrl: string) {
   await db
     .delete(favorites)
-    .where(and(eq(favorites.userId, userId), eq(favorites.articleId, articleId)));
+    .where(
+      and(eq(favorites.userId, userId), eq(favorites.articleUrl, articleUrl))
+    );
   return { success: true };
 }
 
@@ -35,20 +50,19 @@ export async function removeFavorite(userId: string, articleId: number) {
 export async function getUserFavorites(
   userId: string,
   options: { page?: number; limit?: number } = {}
-): Promise<{ articles: ArticleWithTags[]; total: number; totalPages: number }> {
+): Promise<{ articles: FavoriteArticle[]; total: number; totalPages: number }> {
   const { page = 1, limit = 12 } = options;
   const offset = (page - 1) * limit;
 
   // お気に入り記事を取得
   const result = await db
     .select({
-      article: articles,
-      mediaSource: mediaSources,
+      url: favorites.articleUrl,
+      title: favorites.articleTitle,
+      mediaSourceName: favorites.mediaSourceName,
       favoritedAt: favorites.createdAt,
     })
     .from(favorites)
-    .innerJoin(articles, eq(favorites.articleId, articles.id))
-    .innerJoin(mediaSources, eq(articles.mediaSourceId, mediaSources.id))
     .where(eq(favorites.userId, userId))
     .orderBy(desc(favorites.createdAt))
     .limit(limit)
@@ -63,39 +77,15 @@ export async function getUserFavorites(
   const total = totalResult.length;
   const totalPages = Math.ceil(total / limit);
 
-  // タグ情報を一括取得（N+1問題回避）
-  const articleIds = result.map(({ article }) => article.id);
-  let allArticleTagsData: Array<{ articleId: number; tag: typeof tags.$inferSelect }> = [];
-
-  if (articleIds.length > 0) {
-    allArticleTagsData = await db
-      .select({
-        articleId: articleTags.articleId,
-        tag: tags,
-      })
-      .from(articleTags)
-      .innerJoin(tags, eq(articleTags.tagId, tags.id))
-      .where(inArray(articleTags.articleId, articleIds));
-  }
-
-  // タグをarticleIdでグループ化
-  const tagsByArticleId = allArticleTagsData.reduce((acc, { articleId, tag }) => {
-    if (!acc[articleId]) {
-      acc[articleId] = [];
-    }
-    acc[articleId].push(tag);
-    return acc;
-  }, {} as Record<number, Array<typeof tags.$inferSelect>>);
-
-  // 記事にタグを結合
-  const articlesWithTags: ArticleWithTags[] = result.map(({ article, mediaSource }) => ({
-    ...article,
-    mediaSource,
-    tags: tagsByArticleId[article.id] || [],
+  const articles: FavoriteArticle[] = result.map((r) => ({
+    url: r.url,
+    title: r.title || "",
+    mediaSourceName: r.mediaSourceName || "",
+    favoritedAt: r.favoritedAt,
   }));
 
   return {
-    articles: articlesWithTags,
+    articles,
     total,
     totalPages,
   };
@@ -104,11 +94,16 @@ export async function getUserFavorites(
 /**
  * 特定の記事がお気に入りかどうかをチェック
  */
-export async function isFavorited(userId: string, articleId: number): Promise<boolean> {
+export async function isFavorited(
+  userId: string,
+  articleUrl: string
+): Promise<boolean> {
   const result = await db
     .select()
     .from(favorites)
-    .where(and(eq(favorites.userId, userId), eq(favorites.articleId, articleId)))
+    .where(
+      and(eq(favorites.userId, userId), eq(favorites.articleUrl, articleUrl))
+    )
     .limit(1);
 
   return result.length > 0;
@@ -119,21 +114,26 @@ export async function isFavorited(userId: string, articleId: number): Promise<bo
  */
 export async function checkFavorites(
   userId: string,
-  articleIds: number[]
-): Promise<Record<number, boolean>> {
-  if (articleIds.length === 0) {
+  articleUrls: string[]
+): Promise<Record<string, boolean>> {
+  if (articleUrls.length === 0) {
     return {};
   }
 
   const result = await db
-    .select({ articleId: favorites.articleId })
+    .select({ articleUrl: favorites.articleUrl })
     .from(favorites)
-    .where(and(eq(favorites.userId, userId), inArray(favorites.articleId, articleIds)));
+    .where(
+      and(
+        eq(favorites.userId, userId),
+        inArray(favorites.articleUrl, articleUrls)
+      )
+    );
 
-  const favoritedIds = new Set(result.map((r) => r.articleId));
+  const favoritedUrls = new Set(result.map((r) => r.articleUrl));
 
-  return articleIds.reduce((acc, id) => {
-    acc[id] = favoritedIds.has(id);
+  return articleUrls.reduce((acc, url) => {
+    acc[url] = favoritedUrls.has(url);
     return acc;
-  }, {} as Record<number, boolean>);
+  }, {} as Record<string, boolean>);
 }

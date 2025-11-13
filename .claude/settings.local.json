@@ -82,7 +82,8 @@
       "mcp__chrome-devtools__wait_for",
       "mcp__chrome-devtools__list_network_requests",
       "mcp__chrome-devtools__get_network_request",
-      "WebFetch(domain:developer.hatenastaff.com)"
+      "WebFetch(domain:developer.hatenastaff.com)",
+      "Bash(git merge:*)"
     ],
     "deny": [],
     "ask": []

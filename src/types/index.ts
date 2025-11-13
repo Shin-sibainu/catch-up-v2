@@ -22,7 +22,7 @@ export type GetArticlesParams = {
   page?: number;
   limit?: number;
   media?: string[]; // media source names
-  period?: 'day' | 'week' | 'month' | 'all';
+  period?: 'day' | '3days' | 'week' | 'month' | 'all';
   tags?: string[]; // tag slugs
   sort?: 'trend' | 'likes' | 'bookmarks' | 'latest';
   search?: string;

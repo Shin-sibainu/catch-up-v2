@@ -13,7 +13,7 @@ interface HomeContentProps {
 export function HomeContent({ initialArticles, initialTotalPages }: HomeContentProps) {
   const [filters, setFilters] = useState({
     media: [] as string[],
-    period: 'all' as 'day' | 'week' | 'month' | 'all',
+    period: '3days' as 'day' | '3days' | 'week' | 'month' | 'all',
     tags: [] as string[],
     search: '',
     sort: 'trend' as 'trend' | 'likes' | 'bookmarks' | 'latest',
